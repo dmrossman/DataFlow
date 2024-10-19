@@ -7,13 +7,16 @@ Created on Sat Sep 14 08:54:22 2024
 
 # This code requires tksheet which is not a builtin library.  Use pip install tksheet to install
 
-from tksheet import Sheet
 import tkinter as tk
+from tkinter import messagebox
+from tksheet import Sheet
 from serial_handler import SerialHandler
 
 class demo(tk.Tk):
     def __init__(self):
-        tk.Tk.__init__(self)
+        self.window = tk.Tk.__init__(self)
+        self.geometry("900x700")
+        self.protocol("WM_DELETE_WINDOW", self.on_close)
         self.grid_columnconfigure(0, weight = 1)
         self.grid_rowconfigure(0, weight = 1)
         self.frame = tk.Frame(self)
@@ -59,6 +62,10 @@ class demo(tk.Tk):
             self.sheet2.set_cell_data(row - 23, 0, var_names[row])
             self.sheet2.set_cell_data(row - 23, 1, var_data[row])
             
+        # Create a button for doing random stuff
+        self.button = tk.Button(text = "Do Something", command=self.changeData)
+        self.button.grid(row = 1, column = 0, columnspan=1, sticky = "nswe")
+            
         # Setup serial
         # Create the serial object
         self.serialHandler = SerialHandler()
@@ -71,6 +78,10 @@ class demo(tk.Tk):
         self.serialHandler.openSerialPort("COM9", 9600, self.serialCallback)
         self.serialHandler.startThread()
             
+    def changeData(self):
+        print('Change data')
+        self.sheet1.set_cell_data(0, 1, '1.0E15')
+    
     def serialCallback(self, message):
         print("App: callBack: message:")
         print(message)
@@ -109,5 +120,14 @@ class demo(tk.Tk):
     def setBeam(self, message):
         print('Beam changed')
         
+    def on_close(self):
+        print("Closing")
+        if messagebox.askokcancel("Quit", "Do you want to quit?"):
+            self.closeSerial()
+            self.destroy()
+
+        
 app = demo()
+# app.window.geometry("800x800")
+# app.protocol("WM_DELETE_WINDOW", app.on_close)
 app.mainloop()
