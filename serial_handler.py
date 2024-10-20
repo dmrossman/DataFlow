@@ -78,6 +78,7 @@ class SerialHandler:
             while (self.runThread):
                 if (self.computer.in_waiting > 0):
                     value = self.computer.read()
+                    # print(value)
                     
                     # Are we in sync (in a message)
                     if inSync:
@@ -109,17 +110,21 @@ class SerialHandler:
                         # We get in sync if we find the value 22 three times followed by a valid
                         # channel (1, 2, 4, 5)
                         if (messageIndex == 0) and (value == b'\x16'):
+                            print('got 1')
                             message.clear()
                             message.append(value)
                             messageIndex = 1
                         elif (messageIndex == 1) and (value == b'\x16'):
+                            print('got 2')
                             message.append(value)
                             messageIndex += 1
                         elif (messageIndex == 2) and (value == b'\x16'):
+                            print('got 3')
                             message.append(value)
                             messageIndex += 1
                         elif (messageIndex == 3) and (value in ('\x01', b'\x02', b'\x04', b'\x05')):
                             # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
+                            print('got 4')
                             message.append(value)
                             self.messageLength = self.messageLengths[value]
                             messageIndex += 1
@@ -127,7 +132,7 @@ class SerialHandler:
                         else:
                             # This is an invalid character
                             # Just throw the value away
-                            print(f"Not in sync - message index = {messageIndex}")
+                            # print(f"Not in sync - message index = {messageIndex}")
                             messageIndex = 0
         finally:
             self.computer.close()

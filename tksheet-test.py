@@ -116,15 +116,15 @@ class demo(tk.Tk):
             
         # Setup serial
         # Create the serial object
-        # self.serialHandler = SerialHandler()
+        self.serialHandler = SerialHandler()
         
         # Find the open ports.  If there is only one, go ahead
         # and open it.
-        # ports = self.serialHandler.serial_ports()
-        # print('Number of serial ports is:')
-        # print(len(ports))
-        # self.serialHandler.openSerialPort("COM9", 9600, self.serialCallback)
-        # self.serialHandler.startThread()
+        ports = self.serialHandler.serial_ports()
+        print('Number of serial ports is:')
+        print(len(ports))
+        self.serialHandler.openSerialPort("COM3", 9600, self.serialCallback)
+        self.serialHandler.startThread()
             
     def changeData(self):
         print('Change data')
