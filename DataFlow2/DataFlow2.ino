@@ -67,17 +67,17 @@ String buildChannelSDoutput(int channel, int* channel_buffer, int msgLength) {
 
 void writeToSerial(int channel, int* channel_buffer, int msgLength) {
     if(rows < 20) {
-      Serial.print(millis());
-      Serial.print(" - Ch - ");
-      Serial.print(byte(channel));
-      Serial.print(" - ");
+      // Serial.print(millis());
+      // Serial.print(" - Ch - ");
+      // Serial.print(byte(channel));
+      // Serial.print(" - ");
       // Serial.write(byte(len(channel_buffer)))
       for(int i = 0; i < msgLength; i++) {
-        // Serial.write(char(channel_buffer[i]));
-        Serial.print(int(channel_buffer[i]));
-        Serial.print(", ");
+        Serial.write(char(channel_buffer[i]));
+        // Serial.print(int(channel_buffer[i]));
+        // Serial.print(", ");
       }
-      Serial.println();
+      // Serial.println();
       rows++;
     }
 }
