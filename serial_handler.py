@@ -76,7 +76,7 @@ class SerialHandler:
     
         try:
             while (self.runThread):
-                if (self.computer.in_waiting > 0):
+                while (self.computer.in_waiting > 0):
                     value = self.computer.read()
                     # print(value)
                     
@@ -122,13 +122,15 @@ class SerialHandler:
                             print('got 3')
                             message.append(value)
                             messageIndex += 1
-                        elif (messageIndex == 3) and (value in ('\x01', b'\x02', b'\x04', b'\x05')):
-                            # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
-                            print('got 4')
-                            message.append(value)
-                            self.messageLength = self.messageLengths[value]
-                            messageIndex += 1
-                            inSync = True
+                        elif (messageIndex == 3):
+                            print('got 4 : value = ' + str(int.from_bytes(value)))
+                            if  (value in (b'\x01', b'\x02', b'\x04', b'\x05')):
+                                # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
+                                print('got channel : ' + str(int.from_bytes(value)))
+                                message.append(value)
+                                self.messageLength = self.messageLengths[int.from_bytes(value)]
+                                messageIndex += 1
+                                inSync = True
                         else:
                             # This is an invalid character
                             # Just throw the value away

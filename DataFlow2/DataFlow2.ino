@@ -65,28 +65,34 @@ String buildChannelSDoutput(int channel, int* channel_buffer, int msgLength) {
   return(dataString);
 }
 
-void writeToSerial(int channel, int* channel_buffer, int msgLength) {
+void writeToSerial_debugging(int channel, int* channel_buffer, int msgLength) {
     if(rows < 20) {
-      // Serial.print(millis());
-      // Serial.print(" - Ch - ");
-      // Serial.print(byte(channel));
-      // Serial.print(" - ");
-      // Serial.write(byte(len(channel_buffer)))
+      Serial.print(millis());
+      Serial.print(" - Ch - ");
+      Serial.print(byte(channel));
+      Serial.print(" - ");
+      // Serial.write(byte(len(channel_buffer)));
       for(int i = 0; i < msgLength; i++) {
-        Serial.write(char(channel_buffer[i]));
-        // Serial.print(int(channel_buffer[i]));
-        // Serial.print(", ");
-      }
-      // Serial.println();
+        Serial.print(int(channel_buffer[i]));
+        Serial.print(", ");
+       }
+      Serial.println();
       rows++;
     }
+}
+
+void writeToSerial(int channel, int* channel_buffer, int msgLength) {
+  for(int i = 0; i < msgLength; i++) {
+    Serial.write(char(channel_buffer[i]));
+  }
 }
 
 void setupSerial() {
   // This initializes all of the serial ports
     // Setup the serial ports
   long speed = 9600;                // 9600, 19200
-  long config = SERIAL_8E1;
+  // long config = SERIAL_8E1;
+  long config = SERIAL_8E1_RXINV_TXINV;
 
   Serial.begin(9600);              // USB port
 
@@ -205,7 +211,7 @@ void loop() {
         for(int i = 0; i < serialBufferIndex; i++) {
           dataString += serialBuffer[i];
         }
-        Serial.println(dataString);
+        // Serial.println(dataString);
         serialBufferIndex = 0;
         writeToSD(dataString);
       }
@@ -223,7 +229,7 @@ void loop() {
     // Is this a new block of data?
     if((millis() - lastCharTime[0]) > 20) {
       // This signifies the beginning of a new message, so we need to handle some things:
-      Serial.println("channel 1");
+      // Serial.println("channel 1");
       writeToSerial(1, chanBuffers[0], chanIndex[0]);
       writeToSD(buildChannelSDoutput(1, chanBuffers[0], chanIndex[0]));
 
@@ -247,7 +253,7 @@ void loop() {
     // Is this a new block of data?
     if((millis() - lastCharTime[1]) > 20) {
       // This signifies the beginning of a new message, so we need to handle some things:
-      Serial.println("channel 2");
+      // Serial.println("channel 2");
       writeToSerial(2, chanBuffers[1], chanIndex[1]);
       writeToSD(buildChannelSDoutput(2, chanBuffers[1], chanIndex[1]));
 
@@ -270,7 +276,7 @@ void loop() {
     // Is this a new block of data?
     if((millis() - lastCharTime[2]) > 20) {
       // This signifies the beginning of a new message, so we need to handle some things:
-      Serial.println("channel 3");
+      // Serial.println("channel 3");
       writeToSerial(3, chanBuffers[2], chanIndex[2]);
       writeToSD(buildChannelSDoutput(3, chanBuffers[2], chanIndex[2]));
 
@@ -294,7 +300,7 @@ void loop() {
     // Is this a new block of data?
     if((millis() - lastCharTime[3]) > 20) {
       // This signifies the beginning of a new message, so we need to handle some things:
-      Serial.println("channel 4");
+      // Serial.println("channel 4");
       writeToSerial(4, chanBuffers[3], chanIndex[3]);
       writeToSD(buildChannelSDoutput(4, chanBuffers[3], chanIndex[3]));
 
@@ -318,7 +324,7 @@ void loop() {
     // Is this a new block of data?
     if((millis() - lastCharTime[4]) > 20) {
       // This signifies the beginning of a new message, so we need to handle some things:
-      Serial.println("channel 5");
+      // Serial.println("channel 5");
       writeToSerial(5, chanBuffers[4], chanIndex[4]);
       writeToSD(buildChannelSDoutput(5, chanBuffers[4], chanIndex[4]));
 
@@ -342,7 +348,7 @@ void loop() {
     // Is this a new block of data?
     if((millis() - lastCharTime[5]) > 20) {
       // This signifies the beginning of a new message, so we need to handle some things:
-      Serial.println("channel 6");
+      // Serial.println("channel 6");
       writeToSerial(6, chanBuffers[5], chanIndex[5]);
       writeToSD(buildChannelSDoutput(6, chanBuffers[5], chanIndex[5]));
 
@@ -366,7 +372,7 @@ void loop() {
     // Is this a new block of data?
     if((millis() - lastCharTime[6]) > 20) {
       // This signifies the beginning of a new message, so we need to handle some things:
-      Serial.println("channel 7");
+      // Serial.println("channel 7");
       writeToSerial(7, chanBuffers[6], chanIndex[6]);
       writeToSD(buildChannelSDoutput(7, chanBuffers[6], chanIndex[6]));
 
@@ -389,7 +395,7 @@ void loop() {
     // Is this a new block of data?
     if((millis() - lastCharTime[7]) > 20) {
       // This signifies the beginning of a new message, so we need to handle some things:
-      Serial.println("channel 8");
+      // Serial.println("channel 8");
       writeToSerial(8, chanBuffers[7], chanIndex[7]);
       writeToSD(buildChannelSDoutput(8, chanBuffers[7], chanIndex[7]));
 

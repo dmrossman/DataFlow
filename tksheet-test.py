@@ -63,7 +63,7 @@ class demo(tk.Tk):
                        'Vaporizer Heater'  : [2, 0, 1, 66, 69, 0.002, 59],
                        'Extraction I'      : [2, 1, 1, 114, 117, 0.002, 54], 
                        'Extraction V'      : [2, 2, 1, 74, 77, 0.002, 64], 
-                       'E.S. Aperture V'   : [2, 3, 1, ],   # Where is this one? 
+                       'E.S. Aperture V'   : [2, 3, 1, 74, 77, 0.002, 64],   # Where is this one? - made up values
                        'Extraction Axis 1' : [2, 4, 1, 78, 81, 2, 64], 
                        'Extraction Axis 2' : [2, 5, 1, 82, 85, 2, 64], 
                        'Extraction Axis 3' : [2, 6, 1, 86, 89, 2, 64], 
@@ -74,7 +74,7 @@ class demo(tk.Tk):
                        'Accel Supp I'      : [2, 11, 1, 190, 193, 0.002, 54], 
                        'Accel Supp V'      : [2, 12, 1, 194, 197, 0.002, 64],
                        'E.S. Primary I'    : [2, 13, 1, 174, 177, 0.002, 54], 
-                       'E.S. Secondary I'  : [2, 14, 1, 166, 69, 0.002, 54], 
+                       'E.S. Secondary I'  : [2, 14, 1, 166, 169, 0.002, 54], 
                        'Gas Leak Vlv 1'    : [2, 15, 1, 14, 17, 2, 64], 
                        'Gas Leak Vlv 2'    : [2, 16, 1, 18, 21, 2, 64],
                        'Gas Leak Vlv 3'    : [2, 17, 1, 22, 25, 2, 64], 
@@ -139,25 +139,29 @@ class demo(tk.Tk):
 
     
     def serialCallback(self, message):
-        print("App: callBack: message:")
-        print(message)
         # Decode the message coming from the arduino.  
-        # decodedMsg = self.implanter.decodeMessage(message)
-        # print("decoded message")
-        # print(decodedMsg)
+        
+        # First convert the message from bytes to ints - just easier to deal with
+        intMessage = []
+        for val in message:
+            intMessage.append(int.from_bytes(val, "big"))
         
         # Depending on where the message came from, update the right part of the user interface
-        channel = message[3]
+        channel = intMessage[3]
         
         # Channel 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
         if(channel == 1):
-            self.setDose(message)
+            print('channel 1 - Dose')
+            self.setDose(intMessage)
         elif(channel == 2):
-            self.setVac(message)
+            print('channel 2 - Vac')   # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
+            self.setVac(intMessage)
         elif(channel == 4):
-            self.setAMU(message)
+            print('channel 4 - AMU')
+            self.setAMU(intMessage)
         elif(channel == 5):
-            self.setBeam(message)
+            print('channel 5 - Beam')
+            self.setBeam(intMessage)
         return("break")     # What does this do?
         
         
@@ -176,6 +180,8 @@ class demo(tk.Tk):
                 self.sheet1.set_cell_data(row, col, '{:.2f}'.format(val))
             else:
                 self.sheet2.set_cell_data(row, col, '{:.2f}'.format(val))
+        self.sheet1.refresh()
+        print('Finished with Dose')
         
     def setVac(self, message):
         print('Vac changed')
@@ -188,12 +194,13 @@ class demo(tk.Tk):
                 self.sheet1.set_cell_data(row, col, '{:.2f}'.format(val))
             else:
                 self.sheet2.set_cell_data(row, col, '{:.2f}'.format(val))
+        self.sheet1.refresh()
+        print('Finished with Vac')
         
     def setAMU(self, message):
         print('AMU changed')
         if(self.checkSum(message) == False):
             print('Error - AMU message checksum failure')
-        print(message)
         
         # beam_energy = self.decodeValue(message[6:9], 0.032, 66)
         # self.sheet1.set_cell_data(8, 1, '{:.2f}'.format(beam_energy))
@@ -223,7 +230,8 @@ class demo(tk.Tk):
                 self.sheet1.set_cell_data(row, col, '{:.2f}'.format(val))
             else:
                 self.sheet2.set_cell_data(row, col, '{:.2f}'.format(val))
-            
+        self.sheet1.refresh()    
+        print('Finsihed with AMU')
         
 
     def setBeam(self, message):
@@ -233,7 +241,9 @@ class demo(tk.Tk):
         'E.S. Aperture V', 'Extraction Axis 1', 'Extraction Axis 2', 'Extraction Axis 3', 'Ext Suppress I', 'Ext Suppress V', 'Acceleration I',
         'Accel Axis 3', 'Accel Supp I', 'Accel Supp V', 'E.S. Primary I', 'E.S. Secondary I', 'Gas Leak Vlv 1', 'Gas Leak Vlv 2', 'Gas Leak Vlv 3', 
         'Gas Leak Vlv 4', 'Plus Ten 1', 'Plus Ten 2', 'Plus Ten 3', 'Ground']
+        print('Beam message len = ' + str(len(message)))
         for field in fields:
+            print(field)
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2 = self.lookup[field]
             val = self.decodeValue(message[first_byte: last_byte], K1, K2)
@@ -241,6 +251,9 @@ class demo(tk.Tk):
                 self.sheet1.set_cell_data(row, col, '{:.2f}'.format(val))
             else:
                 self.sheet2.set_cell_data(row, col, '{:.2f}'.format(val))
+        self.sheet1.refresh()
+        self.sheet2.refresh()
+        print('Finished with Beam')
         
     def checkSum(self, message):
         # Check the message and see if the checksum is valid
@@ -294,7 +307,7 @@ class demo(tk.Tk):
     def on_close(self):
         print("Closing")
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
-            # self.closeSerial()
+            self.closeSerial()
             self.destroy()
 
         
