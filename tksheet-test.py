@@ -37,52 +37,52 @@ class demo(tk.Tk):
                      '400', '991', '992', '993', '994']
         
         # Format is 'Value Name' : [sheet number, row, column, first byte in message, last byte in message, K1, K2], ... 
-        self.lookup = {'Dose'              : [1, 0, 1, 6, 9, 2, 64], 
-                       'Beam Current'      : [1, 1, 1, 10, 13, 0.002, 54], 
-                       'Wafer Size'        : [1, 2, 1, 14, 17, 2, 64], 
-                       'Preset Scans'      : [1, 3, 1, 18, 21, 2, 64], 
-                       'Estimated Time'    : [1, 4, 1, 22, 25, 0.002, 59], 
-                       'Actual Time'       : [1, 5, 1, 26, 29, 0.002, 59], 
-                       'Press Comp'        : [1, 6, 1, 30, 33, 0.002, 59], 
-                       'Trim'              : [1, 7, 1, 34, 37, 0.002, 59],
-                       'Beam Energy'       : [1, 8, 1, 6, 9, 0.032, 66], 
-                       'A.M.U.'            : [1, 9, 1, 10, 13, 0.03125038, 61], 
-                       'Magnet Current'    : [1, 10, 1, 14, 17, 1.333, 64], 
-                       'Pressure P1'       : [1, 11, 1, 6, 9, 2, 52],
-                       'Pressure P2'       : [1, 12, 1, 10, 13, 2, 52], 
-                       'Pressure P3'       : [1, 13, 1, 14, 17, 2, 52], 
-                       'E.S. Press Start'  : [1, 14, 1, 18, 21, 2, 52], 
-                       'E.S. Press Stop'   : [1, 15, 1, 22, 25, 2, 52],
-                       'Source Arc I'      : [1, 16, 1, 6, 9, 0.002, 59], 
-                       'Source Arc V'      : [1, 17, 1, 38, 41, 0.002, 59], 
-                       'Source Fil I'      : [1, 18, 1, 10, 13, 0.002, 59], 
-                       'Source Fil V'      : [1, 19 ,1, 42, 45, 0.002, 59],
-                       'Source Mag I'      : [1, 20, 1, 70, 73 , 0.002, 59], 
-                       'Vaporizer'         : [1, 21, 1, 198, 201, 0.002, 59], # This one will need to be fixed
-                       'Vaporizer Oven'    : [1, 22, 1, 62, 65, 0.002, 59], 
-                       'Vaporizer Heater'  : [2, 0, 1, 66, 69, 0.002, 59],
-                       'Extraction I'      : [2, 1, 1, 114, 117, 0.002, 54], 
-                       'Extraction V'      : [2, 2, 1, 74, 77, 0.002, 64], 
-                       'E.S. Aperture V'   : [2, 3, 1, 74, 77, 0.002, 64],   # Where is this one? - made up values
-                       'Extraction Axis 1' : [2, 4, 1, 78, 81, 2, 64], 
-                       'Extraction Axis 2' : [2, 5, 1, 82, 85, 2, 64], 
-                       'Extraction Axis 3' : [2, 6, 1, 86, 89, 2, 64], 
-                       'Ext Suppress I'    : [2, 7, 1, 126, 129, 0.002, 54], 
-                       'Ext Suppress V'    : [2, 8, 1, 130, 133, 0.002, 64],
-                       'Acceleration I'    : [2, 9, 1, 178, 181, 0.002, 54], 
-                       'Accel Axis 3'      : [2, 10, 1, 150, 153, 2, 64], 
-                       'Accel Supp I'      : [2, 11, 1, 190, 193, 0.002, 54], 
-                       'Accel Supp V'      : [2, 12, 1, 194, 197, 0.002, 64],
-                       'E.S. Primary I'    : [2, 13, 1, 174, 177, 0.002, 54], 
-                       'E.S. Secondary I'  : [2, 14, 1, 166, 169, 0.002, 54], 
-                       'Gas Leak Vlv 1'    : [2, 15, 1, 14, 17, 2, 64], 
-                       'Gas Leak Vlv 2'    : [2, 16, 1, 18, 21, 2, 64],
-                       'Gas Leak Vlv 3'    : [2, 17, 1, 22, 25, 2, 64], 
-                       'Gas Leak Vlv 4'    : [2, 18, 1, 26, 29, 2, 64], 
-                       'Plus Ten 1'        : [2, 19, 1, 54, 57, 2, 64], 
-                       'Plus Ten 2'        : [2, 20, 1, 118, 121, 2, 64], 
-                       'Plus Ten 3'        : [2, 21, 1, 182, 185, 2, 64], 
-                       'Ground'            : [2, 22, 1, 58, 61, 2, 64]}
+        self.lookup = {'Dose'              : [1, 0, 1, 6, 9, 2, 64, 'E'], 
+                       'Beam Current'      : [1, 1, 1, 10, 13, 0.002, 54, 'F'], 
+                       'Wafer Size'        : [1, 2, 1, 14, 17, 2, 64, 'D'], 
+                       'Preset Scans'      : [1, 3, 1, 18, 21, 2, 64, 'D'], 
+                       'Estimated Time'    : [1, 4, 1, 22, 25, 0.002, 59, 'F'], 
+                       'Actual Time'       : [1, 5, 1, 26, 29, 0.002, 59, 'F'], 
+                       'Press Comp'        : [1, 6, 1, 30, 33, 0.002, 59, 'F'], 
+                       'Trim'              : [1, 7, 1, 34, 37, 0.002, 59, 'F'],
+                       'Beam Energy'       : [1, 8, 1, 6, 9, 0.032, 66, 'F'], 
+                       'A.M.U.'            : [1, 9, 1, 10, 13, 0.03125038, 61, 'F'], 
+                       'Magnet Current'    : [1, 10, 1, 14, 17, 1.333, 64, 'F'], 
+                       'Pressure P1'       : [1, 11, 1, 6, 9, 2, 52, 'E'],
+                       'Pressure P2'       : [1, 12, 1, 10, 13, 2, 52, 'E'], 
+                       'Pressure P3'       : [1, 13, 1, 14, 17, 2, 52, 'E'], 
+                       'E.S. Press Start'  : [1, 14, 1, 18, 21, 2, 52, 'E'], 
+                       'E.S. Press Stop'   : [1, 15, 1, 22, 25, 2, 52, 'E'],
+                       'Source Arc I'      : [1, 16, 1, 6, 9, 0.002, 59, 'F'], 
+                       'Source Arc V'      : [1, 17, 1, 38, 41, 0.002, 59, 'F'], 
+                       'Source Fil I'      : [1, 18, 1, 10, 13, 0.002, 59, 'F'], 
+                       'Source Fil V'      : [1, 19 ,1, 42, 45, 0.002, 59, 'F'],
+                       'Source Mag I'      : [1, 20, 1, 70, 73 , 0.002, 59, 'F'], 
+                       'Vaporizer'         : [1, 21, 1, 198, 201, 0.002, 59, 'V'], # This one will need to be fixed
+                       'Vaporizer Oven'    : [1, 22, 1, 62, 65, 0.002, 59, 'F'], 
+                       'Vaporizer Heater'  : [2, 0, 1, 66, 69, 0.002, 59, 'F'],
+                       'Extraction I'      : [2, 1, 1, 114, 117, 0.002, 54, 'F'], 
+                       'Extraction V'      : [2, 2, 1, 74, 77, 0.002, 64, 'F'], 
+                       'E.S. Aperture V'   : [2, 3, 1, 74, 77, 0.002, 64, 'F'],   # Where is this one? - made up values
+                       'Extraction Axis 1' : [2, 4, 1, 78, 81, 2, 64, 'D'], 
+                       'Extraction Axis 2' : [2, 5, 1, 82, 85, 2, 64, 'D'], 
+                       'Extraction Axis 3' : [2, 6, 1, 86, 89, 2, 64, 'D'], 
+                       'Ext Suppress I'    : [2, 7, 1, 126, 129, 0.002, 54, 'F'], 
+                       'Ext Suppress V'    : [2, 8, 1, 130, 133, 0.002, 64, 'F'],
+                       'Acceleration I'    : [2, 9, 1, 178, 181, 0.002, 54, 'F'], 
+                       'Accel Axis 3'      : [2, 10, 1, 150, 153, 2, 64, 'D'], 
+                       'Accel Supp I'      : [2, 11, 1, 190, 193, 0.002, 54, 'F'], 
+                       'Accel Supp V'      : [2, 12, 1, 194, 197, 0.002, 64, 'F'],
+                       'E.S. Primary I'    : [2, 13, 1, 174, 177, 0.002, 54, 'F'], 
+                       'E.S. Secondary I'  : [2, 14, 1, 166, 169, 0.002, 54, 'F'], 
+                       'Gas Leak Vlv 1'    : [2, 15, 1, 14, 17, 2, 64 'D'], 
+                       'Gas Leak Vlv 2'    : [2, 16, 1, 18, 21, 2, 64 'D'],
+                       'Gas Leak Vlv 3'    : [2, 17, 1, 22, 25, 2, 64 'D'], 
+                       'Gas Leak Vlv 4'    : [2, 18, 1, 26, 29, 2, 64 'D'], 
+                       'Plus Ten 1'        : [2, 19, 1, 54, 57, 2, 64 'D'], 
+                       'Plus Ten 2'        : [2, 20, 1, 118, 121, 2, 64 'D'], 
+                       'Plus Ten 3'        : [2, 21, 1, 182, 185, 2, 64 'D'], 
+                       'Ground'            : [2, 22, 1, 58, 61, 2, 64, 'D']}
         
         self.sheet1 = Sheet(self.frame)
         self.sheet2 = Sheet(self.frame)
@@ -154,7 +154,7 @@ class demo(tk.Tk):
             print('channel 1 - Dose')
             self.setDose(intMessage)
         elif(channel == 2):
-            print('channel 2 - Vac')   # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
+            print('channel 2 - Vac')
             self.setVac(intMessage)
         elif(channel == 4):
             print('channel 4 - AMU')
@@ -170,90 +170,73 @@ class demo(tk.Tk):
         self.serialHandler.closeSerialPort()
     
     def setDose(self, message):
-        print('Dose changed')
+        if(self.checkSum(message) == False):
+            print('Error - Dose message checksum failure')
+        
         fields = ['Dose', 'Beam Current', 'Wafer Size', 'Preset Scans', 'Estimated Time', 'Actual Time', 'Press Comp', 'Trim']
         for field in fields:
             # Calculate the value for the field
-            sheet, row, col, first_byte, last_byte, K1, K2 = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2)
+            sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
+            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
             if(sheet == 1):
-                self.sheet1.set_cell_data(row, col, '{:.2f}'.format(val))
+                self.sheet1.set_cell_data(row, col, val)
             else:
-                self.sheet2.set_cell_data(row, col, '{:.2f}'.format(val))
+                self.sheet2.set_cell_data(row, col, val)
         self.sheet1.refresh()
-        print('Finished with Dose')
+        self.sheet2.refresh()
         
     def setVac(self, message):
-        print('Vac changed')
+        if(self.checkSum(message) == False):
+            print('Error - Vac message checksum failure')
+        
         fields = ['Pressure P1', 'Pressure P2', 'Pressure P3', 'E.S. Press Start', 'E.S. Press Stop']
         for field in fields:
             # Calculate the value for the field
-            sheet, row, col, first_byte, last_byte, K1, K2 = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2)
+            sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
+            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
             if(sheet == 1):
-                self.sheet1.set_cell_data(row, col, '{:.2f}'.format(val))
+                self.sheet1.set_cell_data(row, col, val)
             else:
-                self.sheet2.set_cell_data(row, col, '{:.2f}'.format(val))
+                self.sheet2.set_cell_data(row, col, val)
         self.sheet1.refresh()
-        print('Finished with Vac')
+        self.sheet2.refresh()
         
     def setAMU(self, message):
-        print('AMU changed')
         if(self.checkSum(message) == False):
             print('Error - AMU message checksum failure')
         
-        # beam_energy = self.decodeValue(message[6:9], 0.032, 66)
-        # self.sheet1.set_cell_data(8, 1, '{:.2f}'.format(beam_energy))
-        # # self.sheet1[9, 1].options(undo=False).data = str(beam_energy)
-        # print('beam_energy = ' + str(beam_energy))
-        
-        # magnet_current = self.decodeValue(message[14:17], 1.333, 64)
-        # self.sheet1.set_cell_data(10, 1, '{:.2f}'.format(magnet_current))
-        # # self.sheet1[11, 1].options(undo=False).data = str(magnet_current)
-        # print('magnet_current = ' + str(magnet_current))
-        
-        # amu_val = self.decodeValue(message[10:13], 0.03125038, 61)
-        # self.sheet1.set_cell_data(9, 1, '{:.2f}'.format(amu_val))
-        # # self.sheet1[10, 1].options(undo=False).data = str(amu_val)
-        # print('amu_val = ' + str(amu_val))
-        
-        # print(self.sheet1.get_cell_data(0, 9))
-        # print(self.sheet1.get_cell_data(0, 11))
-        # print(self.sheet1.get_cell_data(0, 10))
-        # # self.sheet1.refresh()
         fields = ['Beam Energy', 'A.M.U.', 'Magnet Current']
         for field in fields:
             # Calculate the value for the field
-            sheet, row, col, first_byte, last_byte, K1, K2 = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2)
+            sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
+            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
             if(sheet == 1):
-                self.sheet1.set_cell_data(row, col, '{:.2f}'.format(val))
+                self.sheet1.set_cell_data(row, col, val)
             else:
-                self.sheet2.set_cell_data(row, col, '{:.2f}'.format(val))
+                self.sheet2.set_cell_data(row, col, val)
         self.sheet1.refresh()    
-        print('Finsihed with AMU')
-        
+        self.sheet2.refresh()
 
     def setBeam(self, message):
-        print('Beam changed')
+        if(self.checkSum(message) == False):
+            print('Error - Beam message checksum failure')
+        
         fields = ['Source Arc I', 'Source Arc V', 
         'Source Fil I', 'Source Fil V', 'Source Mag I', 'Vaporizer', 'Vaporizer Oven', 'Vaporizer Heater', 'Extraction I', 'Extraction V',
         'E.S. Aperture V', 'Extraction Axis 1', 'Extraction Axis 2', 'Extraction Axis 3', 'Ext Suppress I', 'Ext Suppress V', 'Acceleration I',
         'Accel Axis 3', 'Accel Supp I', 'Accel Supp V', 'E.S. Primary I', 'E.S. Secondary I', 'Gas Leak Vlv 1', 'Gas Leak Vlv 2', 'Gas Leak Vlv 3', 
         'Gas Leak Vlv 4', 'Plus Ten 1', 'Plus Ten 2', 'Plus Ten 3', 'Ground']
-        print('Beam message len = ' + str(len(message)))
         for field in fields:
             print(field)
             # Calculate the value for the field
-            sheet, row, col, first_byte, last_byte, K1, K2 = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2)
+            sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
+            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
             if(sheet == 1):
-                self.sheet1.set_cell_data(row, col, '{:.2f}'.format(val))
+                self.sheet1.set_cell_data(row, col, val)
             else:
-                self.sheet2.set_cell_data(row, col, '{:.2f}'.format(val))
+                self.sheet2.set_cell_data(row, col, val)
         self.sheet1.refresh()
         self.sheet2.refresh()
-        print('Finished with Beam')
         
     def checkSum(self, message):
         # Check the message and see if the checksum is valid
@@ -285,7 +268,7 @@ class demo(tk.Tk):
             return(True)
         return(False)
     
-    def decodeValue(self, msgBytes, K1, K2):
+    def decodeValue(self, msgBytes, K1, K2, fmt):
         # decodeValue expects three bytes from one of the messages
         # If the first byte is zero, just return zero
         # Otherwise:
@@ -295,14 +278,32 @@ class demo(tk.Tk):
         #      and byte 3 = byte 3 * 2
         # result = (K1/32768) * 4^(byte 1 - K2)*(32768 + 256 * byte 2 + byte 3)
         if(msgBytes[0] == 0):
-            return(0)
-        
-        if(msgBytes[1] >= 128):
-            msgBytes[1] = 2 * msgBytes[1] - 128
-            msgBytes[2] = 2 * msgBytes[2]
+            result = 0
+        else:
+            if (msgBytes[1] >= 128):
+                msgBytes[1] = 2 * msgBytes[1] - 128
+                msgBytes[2] = 2 * msgBytes[2]
             
-        result = (K1/32768) * 4**(msgBytes[0] - K2) * (32768 + (256 * msgBytes[1]) + msgBytes[2])
-        return(result)
+            result = (K1/32768) * 4**(msgBytes[0] - K2) * (32768 + (256 * msgBytes[1]) + msgBytes[2])
+        
+        # Now that we have the value, let's return a string with the correct format
+        
+        if(fmt == 'D'):     # Deccimal
+            return('{:.0f}'.format(result))
+        elif(fmt == 'F'):   # Floating point
+            return('{:.3f}'.format(result))
+        elif(fmt == 'E'):   # Scientific notation, exponent
+            return('{:.3e}'.format(result))
+        elif(fmt == 'V'):   # Vaporizer - this is special
+            if((msgBytes[0] > 63) && (msgBytes[0] < 80)):
+                return('Off')
+            elif((msgBytes[0] > 79) && (msgBytes[0] < 96)):
+                return('On')
+            elif((msgBytes[0] > 95) && (msgBytes[0] < 112)):
+                return('Cool')
+        else:
+            print('Error: Invalid number format')
+        
     
     def on_close(self):
         print("Closing")

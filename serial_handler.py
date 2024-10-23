@@ -114,16 +114,23 @@ class SerialHandler:
                             message.clear()
                             message.append(value)
                             messageIndex = 1
-                        elif (messageIndex == 1) and (value == b'\x16'):
-                            print('got 2')
-                            message.append(value)
-                            messageIndex += 1
-                        elif (messageIndex == 2) and (value == b'\x16'):
-                            print('got 3')
-                            message.append(value)
-                            messageIndex += 1
+                        elif (messageIndex == 1):
+                            if (value == b'\x16'):
+                                print('got 2')
+                                message.append(value)
+                                messageIndex += 1
+                            else:
+                                print('Sync error: index 1')
+                                messageIndex = 0
+                        elif (messageIndex == 2):
+                            if (value == b'\x16'):
+                                print('got 3')
+                                message.append(value)
+                                messageIndex += 1
+                            else:
+                                print('Sync error: index 2')
+                                messageIndex = 0
                         elif (messageIndex == 3):
-                            print('got 4 : value = ' + str(int.from_bytes(value)))
                             if  (value in (b'\x01', b'\x02', b'\x04', b'\x05')):
                                 # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
                                 print('got channel : ' + str(int.from_bytes(value)))
@@ -131,6 +138,9 @@ class SerialHandler:
                                 self.messageLength = self.messageLengths[int.from_bytes(value)]
                                 messageIndex += 1
                                 inSync = True
+                            else:
+                                print('Sync error: invalid channel')
+                                messageIndex = 0
                         else:
                             # This is an invalid character
                             # Just throw the value away
