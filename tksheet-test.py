@@ -48,12 +48,12 @@ class demo(tk.Tk):
                        'Beam Energy'       : [1, 8, 1, 6, 9, 0.032, 66, 'F'], 
                        'A.M.U.'            : [1, 9, 1, 10, 13, 0.03125038, 61, 'F'], 
                        'Magnet Current'    : [1, 10, 1, 14, 17, 1.333, 64, 'F'], 
-                       'Pressure P1'       : [1, 11, 1, 6, 9, 2, 52, 'E'],
-                       'Pressure P2'       : [1, 12, 1, 10, 13, 2, 52, 'E'], 
-                       'Pressure P3'       : [1, 13, 1, 14, 17, 2, 52, 'E'], 
-                       'E.S. Press Start'  : [1, 14, 1, 18, 21, 2, 52, 'E'], 
-                       'E.S. Press Stop'   : [1, 15, 1, 22, 25, 2, 52, 'E'],
-                       'Source Arc I'      : [1, 16, 1, 6, 9, 0.002, 59, 'F'], 
+                       'Pressure P1'       : [1, 11, 1, 6, 9, 2, 64, 'E'],
+                       'Pressure P2'       : [1, 12, 1, 10, 13, 2, 64, 'E'], 
+                       'Pressure P3'       : [1, 13, 1, 14, 17, 2, 64, 'E'], 
+                       'E.S. Press Start'  : [1, 14, 1, 18, 21, 2, 64, 'E'], 
+                       'E.S. Press Stop'   : [1, 15, 1, 22, 25, 2, 64, 'E'],
+                       'Source Arc I'      : [1, 16, 1, 6, 9, 0.002, 59, 'F'],
                        'Source Arc V'      : [1, 17, 1, 38, 41, 0.002, 59, 'F'], 
                        'Source Fil I'      : [1, 18, 1, 10, 13, 0.002, 59, 'F'], 
                        'Source Fil V'      : [1, 19 ,1, 42, 45, 0.002, 59, 'F'],
@@ -63,7 +63,7 @@ class demo(tk.Tk):
                        'Vaporizer Heater'  : [2, 0, 1, 66, 69, 0.002, 59, 'F'],
                        'Extraction I'      : [2, 1, 1, 114, 117, 0.002, 54, 'F'], 
                        'Extraction V'      : [2, 2, 1, 74, 77, 0.002, 64, 'F'], 
-                       'E.S. Aperture V'   : [2, 3, 1, 74, 77, 0.002, 64, 'F'],   # Where is this one? - made up values
+                       'E.S. Aperture V'   : [2, 3, 1, 138, 141, 0.002, 64, 'F'],   # I found it.  Need to verify the values
                        'Extraction Axis 1' : [2, 4, 1, 78, 81, 2, 64, 'D'], 
                        'Extraction Axis 2' : [2, 5, 1, 82, 85, 2, 64, 'D'], 
                        'Extraction Axis 3' : [2, 6, 1, 86, 89, 2, 64, 'D'], 
@@ -75,13 +75,13 @@ class demo(tk.Tk):
                        'Accel Supp V'      : [2, 12, 1, 194, 197, 0.002, 64, 'F'],
                        'E.S. Primary I'    : [2, 13, 1, 174, 177, 0.002, 54, 'F'], 
                        'E.S. Secondary I'  : [2, 14, 1, 166, 169, 0.002, 54, 'F'], 
-                       'Gas Leak Vlv 1'    : [2, 15, 1, 14, 17, 2, 64 'D'], 
-                       'Gas Leak Vlv 2'    : [2, 16, 1, 18, 21, 2, 64 'D'],
-                       'Gas Leak Vlv 3'    : [2, 17, 1, 22, 25, 2, 64 'D'], 
-                       'Gas Leak Vlv 4'    : [2, 18, 1, 26, 29, 2, 64 'D'], 
-                       'Plus Ten 1'        : [2, 19, 1, 54, 57, 2, 64 'D'], 
-                       'Plus Ten 2'        : [2, 20, 1, 118, 121, 2, 64 'D'], 
-                       'Plus Ten 3'        : [2, 21, 1, 182, 185, 2, 64 'D'], 
+                       'Gas Leak Vlv 1'    : [2, 15, 1, 14, 17, 2, 64, 'D'], 
+                       'Gas Leak Vlv 2'    : [2, 16, 1, 18, 21, 2, 64, 'D'],
+                       'Gas Leak Vlv 3'    : [2, 17, 1, 22, 25, 2, 64, 'D'], 
+                       'Gas Leak Vlv 4'    : [2, 18, 1, 26, 29, 2, 64, 'D'], 
+                       'Plus Ten 1'        : [2, 19, 1, 54, 57, 2, 64, 'D'], 
+                       'Plus Ten 2'        : [2, 20, 1, 118, 121, 2, 64, 'D'], 
+                       'Plus Ten 3'        : [2, 21, 1, 182, 185, 2, 64, 'D'], 
                        'Ground'            : [2, 22, 1, 58, 61, 2, 64, 'D']}
         
         self.sheet1 = Sheet(self.frame)
@@ -227,7 +227,6 @@ class demo(tk.Tk):
         'Accel Axis 3', 'Accel Supp I', 'Accel Supp V', 'E.S. Primary I', 'E.S. Secondary I', 'Gas Leak Vlv 1', 'Gas Leak Vlv 2', 'Gas Leak Vlv 3', 
         'Gas Leak Vlv 4', 'Plus Ten 1', 'Plus Ten 2', 'Plus Ten 3', 'Ground']
         for field in fields:
-            print(field)
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
             val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
@@ -295,11 +294,11 @@ class demo(tk.Tk):
         elif(fmt == 'E'):   # Scientific notation, exponent
             return('{:.3e}'.format(result))
         elif(fmt == 'V'):   # Vaporizer - this is special
-            if((msgBytes[0] > 63) && (msgBytes[0] < 80)):
+            if((msgBytes[0] > 63) and (msgBytes[0] < 80)):
                 return('Off')
-            elif((msgBytes[0] > 79) && (msgBytes[0] < 96)):
+            elif((msgBytes[0] > 79) and (msgBytes[0] < 96)):
                 return('On')
-            elif((msgBytes[0] > 95) && (msgBytes[0] < 112)):
+            elif((msgBytes[0] > 95) and (msgBytes[0] < 112)):
                 return('Cool')
         else:
             print('Error: Invalid number format')
