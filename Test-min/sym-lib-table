@@ -1,0 +1,8 @@
+(sym_lib_table
+  (lib (name "110-43-648-41-001000")(type "Legacy")(uri "${KIPRJMOD}/libraries/110-43-648-41-001000/110-43-648-41-001000.lib")(options "")(descr ""))
+  (lib (name "HFRB-1522ETZ")(type "KiCad")(uri "${KIPRJMOD}/libraries/HFBR-1522ETZ/HFRB-1522ETZ.kicad_sym")(options "")(descr "")(disabled))
+  (lib (name "HFBR-1522ETZ")(type "KiCad")(uri "${KIPRJMOD}/libraries/HFBR-1522ETZ.kicad_sym")(options "")(descr "")(disabled))
+  (lib (name "HFBR-2522ETZ")(type "KiCad")(uri "${KIPRJMOD}/libraries/HFBR-2522ETZ.kicad_sym")(options "")(descr "")(disabled))
+  (lib (name "Fiber_Optic_Project")(type "KiCad")(uri "${KIPRJMOD}/libraries/Fiber_Optic_Project.kicad_sym")(options "")(descr ""))
+  (lib (name "Misc")(type "KiCad")(uri "${KIPRJMOD}/libraries/Misc.kicad_sym")(options "")(descr ""))
+)
