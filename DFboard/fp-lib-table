@@ -1,0 +1,6 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "110-43-648-41-001000")(type "KiCad")(uri "${KIPRJMOD}/libraries/110-43-648-41-001000/110-43-648-41-001000.pretty")(options "")(descr ""))
+  (lib (name "HFBR-1522ETZ")(type "KiCad")(uri "${KIPRJMOD}/libraries/HFBR-1522ETZ.pretty")(options "")(descr "")(disabled))
+  (lib (name "Misc")(type "KiCad")(uri "${KIPRJMOD}/libraries/Misc.pretty")(options "")(descr ""))
+)
