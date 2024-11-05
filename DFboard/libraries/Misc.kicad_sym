@@ -52,7 +52,7 @@
 		)
 		(symbol "MAX3232_1_1"
 			(pin output line
-				(at 0 -2.54 0)
+				(at 10.16 -2.54 180)
 				(length 2.54)
 				(name "T1_Out"
 					(effects
@@ -70,7 +70,7 @@
 				)
 			)
 			(pin output line
-				(at 0 -25.4 0)
+				(at -10.16 -12.7 0)
 				(length 2.54)
 				(name "R2_Out"
 					(effects
@@ -88,7 +88,7 @@
 				)
 			)
 			(pin output line
-				(at 0 -5.08 0)
+				(at 10.16 -5.08 180)
 				(length 2.54)
 				(name "T2_Out"
 					(effects
@@ -106,7 +106,7 @@
 				)
 			)
 			(pin input line
-				(at 0 -7.62 0)
+				(at 10.16 -7.62 180)
 				(length 2.54)
 				(name "R1_In"
 					(effects
@@ -124,7 +124,7 @@
 				)
 			)
 			(pin input line
-				(at 0 -10.16 0)
+				(at 10.16 -10.16 180)
 				(length 2.54)
 				(name "R2_In"
 					(effects
@@ -142,7 +142,7 @@
 				)
 			)
 			(pin input line
-				(at 0 -12.7 0)
+				(at 10.16 -12.7 180)
 				(length 2.54)
 				(name "3-5.5V"
 					(effects
@@ -160,7 +160,7 @@
 				)
 			)
 			(pin input line
-				(at 0 -15.24 0)
+				(at -10.16 -2.54 0)
 				(length 2.54)
 				(name "GND"
 					(effects
@@ -178,7 +178,7 @@
 				)
 			)
 			(pin input line
-				(at 0 -17.78 0)
+				(at -10.16 -5.08 0)
 				(length 2.54)
 				(name "T1_In"
 					(effects
@@ -196,7 +196,7 @@
 				)
 			)
 			(pin input line
-				(at 0 -20.32 0)
+				(at -10.16 -7.62 0)
 				(length 2.54)
 				(name "T2_In"
 					(effects
@@ -214,7 +214,7 @@
 				)
 			)
 			(pin output line
-				(at 0 -22.86 0)
+				(at -10.16 -10.16 0)
 				(length 2.54)
 				(name "R1_Out"
 					(effects
