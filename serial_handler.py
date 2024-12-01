@@ -8,6 +8,8 @@ import serial
 import threading
 import sys
 import glob
+import time
+import math
 
 class SerialHandler:
     def __init__(self):
@@ -36,6 +38,22 @@ class SerialHandler:
         self.serial_thread = threading.Thread(target=self.handle_serial_port, args=(), daemon=True)
         print('Created the thread')
         
+        # Send the current computer time to the arduino (Should I do this here or in the tksheet code?)
+        curr_time = math.floor(time.time())
+        curr_time_series = self.int_to_series(curr_time)
+        len_of_msg = len(curr_time_series) + 1
+        # Create a message out of bytes.  First three are 22 (message into), then channel (0), number of remaining byte, message, then 255
+        time_msg = [22, 22, 22, 0, len_of_msg] + curr_time_series
+        # End the message with a 255
+        time_msg.append(255)
+        # Now send it
+        self.sendMessage(time_msg)
+        
+    def int_to_series(self, num):
+        # Used to convert a time value into a series of bytes
+        # A time value of 1733011658 would convert to [1, 7, 3, 3, 0, 1, 1, 6, 5, 8]
+        num_str = str(num)
+        return [int(digit) for digit in num_str]
         
     def startThread(self):
         self.runThread = True

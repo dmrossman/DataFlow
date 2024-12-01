@@ -11,6 +11,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tksheet import Sheet
 from serial_handler import SerialHandler
+import time
 
 class demo(tk.Tk):
     def __init__(self):

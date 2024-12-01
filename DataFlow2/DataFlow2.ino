@@ -9,6 +9,9 @@
 #include <SD.h>
 #include <SPI.h>
 
+// This include is for keeping track of real time
+#include <TimeLib.h>
+
 const int numberOfMessages = 8;          // Let's try and get all of the messages between the controllers (AMU, Dose, Beam, Vac. Not Endstation for now - no more channels)
 const int buffer_size = 255;             // Size of the data buffers.  I have no idea, so setting them big to start with
 unsigned char in_char, out_char;         // Do I need to trim the parity bit off like I did with earlier 7 bit data?
