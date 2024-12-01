@@ -65,12 +65,14 @@ boolean addCharToMessage(byte charReceived, int* channel_buffer, int* channel_in
 // If we aren't in a message yet (inMessage is false), then wait for three 22's to arrive
 // this will be followed by the channel number and then the number of bytes left in the 
 // message.  The last byte should be 255.  Once the message is done, return True.
-
+  Serial.println("AddToMsg");
   if (inMessage) {
+    Serial.println("InMessage");
     // We are already in the message
     channel_buffer[*channel_index++] = charReceived;
     *bytesLeft--;
     if (*bytesLeft == 0) {
+      Serial.println(*bytesLeft);
       // We are done with this message
       *inMessage = false;
       *channel_index = 0;
@@ -81,16 +83,20 @@ boolean addCharToMessage(byte charReceived, int* channel_buffer, int* channel_in
     // We are waiting for the message to start
     // Look for the leading 22's
     if((charReceived == 22) && (*channel_index < 3)) {
+      Serial.println("InHeader");
       channel_buffer[*channel_index++] = charReceived;
     }
     else if(*channel_index == 3) {
       // This is the channel id.  Just append it to the message.
       // We could check that the channel is valid?  Maybe later.
+      Serial.println("InChannel");
       channel_buffer[*channel_index++] = charReceived;
     }
     else if(*channel_index == 4) {
       // This is how many bytes are left in the message.  We are now "in the message".
       channel_buffer[*channel_index++] = charReceived;
+      Serial.println("BytesLeft");
+      Serial.println(charReceived);
       *bytesLeft = charReceived;
       *inMessage = true;
     }
@@ -113,7 +119,7 @@ String buildChannelSDoutput(int channel, int* channel_buffer, int msgLength) {
 }
 
 void writeToSerial_debugging(int channel, int* channel_buffer, int msgLength) {
-    if(rows < 20) {
+    if(rows < 100) {
       Serial.print(millis());
       Serial.print(" - Ch - ");
       Serial.print(byte(channel));

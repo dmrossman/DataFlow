@@ -230,7 +230,7 @@ void loop() {
     out_char = in_char;
 
     // Is this a new block of data?
-    if((millis() - lastCharTime[0]) > 20) {
+    if((millis() - lastCharTime[0]) > 100) {
       // This signifies the beginning of a new message, so we need to handle some things:
       // Serial.println("channel 1");
       writeToSerial(1, chanBuffers[0], chanIndex[0]);
@@ -254,7 +254,7 @@ void loop() {
     out_char = in_char;
     
     // Is this a new block of data?
-    if((millis() - lastCharTime[1]) > 20) {
+    if((millis() - lastCharTime[1]) > 100) {
       // This signifies the beginning of a new message, so we need to handle some things:
       // Serial.println("channel 2");
       writeToSerial(2, chanBuffers[1], chanIndex[1]);
@@ -277,7 +277,7 @@ void loop() {
     out_char = in_char;
     
     // Is this a new block of data?
-    if((millis() - lastCharTime[2]) > 20) {
+    if((millis() - lastCharTime[2]) > 100) {
       // This signifies the beginning of a new message, so we need to handle some things:
       // Serial.println("channel 3");
       writeToSerial(3, chanBuffers[2], chanIndex[2]);
@@ -301,7 +301,7 @@ void loop() {
     out_char = in_char;
     
     // Is this a new block of data?
-    if((millis() - lastCharTime[3]) > 20) {
+    if((millis() - lastCharTime[3]) > 100) {
       // This signifies the beginning of a new message, so we need to handle some things:
       // Serial.println("channel 4");
       writeToSerial(4, chanBuffers[3], chanIndex[3]);
@@ -325,7 +325,7 @@ void loop() {
     out_char = in_char;
     
     // Is this a new block of data?
-    if((millis() - lastCharTime[4]) > 20) {
+    if((millis() - lastCharTime[4]) > 100) {
       // This signifies the beginning of a new message, so we need to handle some things:
       // Serial.println("channel 5");
       writeToSerial(5, chanBuffers[4], chanIndex[4]);
@@ -349,7 +349,7 @@ void loop() {
     out_char = in_char;
     
     // Is this a new block of data?
-    if((millis() - lastCharTime[5]) > 20) {
+    if((millis() - lastCharTime[5]) > 100) {
       // This signifies the beginning of a new message, so we need to handle some things:
       // Serial.println("channel 6");
       writeToSerial(6, chanBuffers[5], chanIndex[5]);
@@ -373,7 +373,7 @@ void loop() {
     out_char = in_char;
     
     // Is this a new block of data?
-    if((millis() - lastCharTime[6]) > 20) {
+    if((millis() - lastCharTime[6]) > 100) {
       // This signifies the beginning of a new message, so we need to handle some things:
       // Serial.println("channel 7");
       writeToSerial(7, chanBuffers[6], chanIndex[6]);
@@ -396,7 +396,7 @@ void loop() {
     out_char = in_char;
     
     // Is this a new block of data?
-    if((millis() - lastCharTime[7]) > 20) {
+    if((millis() - lastCharTime[7]) > 100) {
       // This signifies the beginning of a new message, so we need to handle some things:
       // Serial.println("channel 8");
       writeToSerial(8, chanBuffers[7], chanIndex[7]);

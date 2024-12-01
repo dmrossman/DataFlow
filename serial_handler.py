@@ -47,7 +47,7 @@ class SerialHandler:
         # End the message with a 255
         time_msg.append(255)
         # Now send it
-        self.sendMessage(time_msg)
+        # self.sendMessage(time_msg)
         
     def int_to_series(self, num):
         # Used to convert a time value into a series of bytes
