@@ -60,42 +60,63 @@ void writeToSD(String dataString) {
   }
 }
 
-boolean addCharToMessage(byte charReceived, int* channel_buffer, int* channel_index, bool* inMessage, int* bytesLeft) {
+boolean addCharToMessage(byte charReceived, int channel, int* channel_buffer, int* channel_index, bool* inMessage, int* bytesLeft) {
 // This handles taking a new character and adding to to the message
 // If we aren't in a message yet (inMessage is false), then wait for three 22's to arrive
 // this will be followed by the channel number and then the number of bytes left in the 
 // message.  The last byte should be 255.  Once the message is done, return True.
 
-  if (inMessage) {
+  if (inMessage[channel]) {
     // We are already in the message
-    channel_buffer[*channel_index++] = charReceived;
-    *bytesLeft--;
-    if (*bytesLeft == 0) {
+    channel_buffer[channel_index[channel]++] = charReceived;
+    bytesLeft[channel]--;
+    if (bytesLeft[channel] == 0) {
       // We are done with this message
-      *inMessage = false;
-      *channel_index = 0;
+      inMessage[channel] = false;
+      channel_index[channel] = 0;
       return(true);
     }
   }
   else {
     // We are waiting for the message to start
     // Look for the leading 22's
-    if((charReceived == 22) && (*channel_index < 3)) {
-      channel_buffer[*channel_index++] = charReceived;
+    if((charReceived == 22) && (channel_index[channel] < 3)) {
+      channel_buffer[channel_index[channel]++] = charReceived;
     }
-    else if(*channel_index == 3) {
+    else if(channel_index[channel] == 3) {
       // This is the channel id.  Just append it to the message.
       // We could check that the channel is valid?  Maybe later.
-      channel_buffer[*channel_index++] = charReceived;
+      channel_buffer[channel_index[channel]++] = charReceived;
     }
-    else if(*channel_index == 4) {
+    else if(channel_index[channel] == 4) {
       // This is how many bytes are left in the message.  We are now "in the message".
-      channel_buffer[*channel_index++] = charReceived;
-      *bytesLeft = charReceived;
-      *inMessage = true;
+      channel_buffer[channel_index[channel]++] = charReceived;
+      bytesLeft[channel] = charReceived;
+      inMessage[channel] = true;
     }
   }
   return(false);
+}
+
+void printStatus() {
+  // Temporary function for debugging
+  for(int i = 0; i < numberOfMessages; i++) {
+    Serial.print("Channel : ");
+    Serial.print(i);
+    Serial.print(" : ");
+    for(int j = 0; j < buffer_size; j++) {
+      Serial.print(chanBuffers[i][j]);
+      Serial.print(", ");
+    }
+    Serial.print("Index : ");
+    Serial.print(chanIndex[i]);
+    Serial.print(" : ");
+    Serial.print("Bool : ");
+    Serial.print(chanInMessage[i]);
+    Serial.print(" : BytesInMsg : ");
+    Serial.print(chanBytesRemaining[i]);
+    Serial.println();
+  }
 }
 
 String buildChannelSDoutput(int channel, int* channel_buffer, int msgLength) {
@@ -252,7 +273,7 @@ void loop() {
     int channel = 0;
 
     // Add the character to the buffer and see if the buffer is complete
-    if(addCharToMessage(out_char, chanBuffers[channel], &chanIndex[channel], &chanInMessage[channel], &chanBytesRemaining[channel])) {
+    if(addCharToMessage(out_char, channel, chanBuffers[channel], chanIndex, chanInMessage, chanBytesRemaining)) {
       // The message is complete
       writeToSerial(1, chanBuffers[channel], chanIndex[channel]);
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
@@ -268,7 +289,7 @@ void loop() {
     int channel = 1;
 
     // Add the character to the buffer and see if the buffer is complete
-    if(addCharToMessage(out_char, chanBuffers[channel], &chanIndex[channel], &chanInMessage[channel], &chanBytesRemaining[channel])) {
+    if(addCharToMessage(out_char, channel, chanBuffers[channel], chanIndex, chanInMessage, chanBytesRemaining)) {
       // The message is complete
       writeToSerial(1, chanBuffers[channel], chanIndex[channel]);
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
@@ -284,7 +305,7 @@ void loop() {
     int channel = 2;
 
     // Add the character to the buffer and see if the buffer is complete
-    if(addCharToMessage(out_char, chanBuffers[channel], &chanIndex[channel], &chanInMessage[channel], &chanBytesRemaining[channel])) {
+    if(addCharToMessage(out_char, channel, chanBuffers[channel], chanIndex, chanInMessage, chanBytesRemaining)) {
       // The message is complete
       writeToSerial(1, chanBuffers[channel], chanIndex[channel]);
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
@@ -301,7 +322,7 @@ void loop() {
     int channel = 3;
 
     // Add the character to the buffer and see if the buffer is complete
-    if(addCharToMessage(out_char, chanBuffers[channel], &chanIndex[channel], &chanInMessage[channel], &chanBytesRemaining[channel])) {
+    if(addCharToMessage(out_char, channel, chanBuffers[channel], chanIndex, chanInMessage, chanBytesRemaining)) {
       // The message is complete
       writeToSerial(1, chanBuffers[channel], chanIndex[channel]);
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
@@ -318,7 +339,7 @@ void loop() {
     int channel = 4;
 
     // Add the character to the buffer and see if the buffer is complete
-    if(addCharToMessage(out_char, chanBuffers[channel], &chanIndex[channel], &chanInMessage[channel], &chanBytesRemaining[channel])) {
+    if(addCharToMessage(out_char, channel, chanBuffers[channel], chanIndex, chanInMessage, chanBytesRemaining)) {
       // The message is complete
       writeToSerial(1, chanBuffers[channel], chanIndex[channel]);
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
@@ -335,7 +356,7 @@ void loop() {
     int channel = 5;
 
     // Add the character to the buffer and see if the buffer is complete
-    if(addCharToMessage(out_char, chanBuffers[channel], &chanIndex[channel], &chanInMessage[channel], &chanBytesRemaining[channel])) {
+    if(addCharToMessage(out_char, channel, chanBuffers[channel], chanIndex, chanInMessage, chanBytesRemaining)) {
       // The message is complete
       writeToSerial(1, chanBuffers[channel], chanIndex[channel]);
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
@@ -352,7 +373,7 @@ void loop() {
     int channel = 6;
 
     // Add the character to the buffer and see if the buffer is complete
-    if(addCharToMessage(out_char, chanBuffers[channel], &chanIndex[channel], &chanInMessage[channel], &chanBytesRemaining[channel])) {
+    if(addCharToMessage(out_char, channel, chanBuffers[channel], chanIndex, chanInMessage, chanBytesRemaining)) {
       // The message is complete
       writeToSerial(1, chanBuffers[channel], chanIndex[channel]);
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
@@ -368,7 +389,7 @@ void loop() {
     int channel = 7;
 
     // Add the character to the buffer and see if the buffer is complete
-    if(addCharToMessage(out_char, chanBuffers[channel], &chanIndex[channel], &chanInMessage[channel], &chanBytesRemaining[channel])) {
+    if(addCharToMessage(out_char, channel, chanBuffers[channel], chanIndex, chanInMessage, chanBytesRemaining)) {
       // The message is complete
       writeToSerial(1, chanBuffers[channel], chanIndex[channel]);
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
