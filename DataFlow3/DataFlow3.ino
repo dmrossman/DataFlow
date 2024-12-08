@@ -259,8 +259,8 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], chanIndex[channel]);
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
+      writeToSerial(channel, chanBuffers[channel], msgLength);
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -276,8 +276,8 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], chanIndex[channel]);
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
+      writeToSerial(channel, chanBuffers[channel], msgLength);
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -293,8 +293,8 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], chanIndex[channel]);
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
+      writeToSerial(channel, chanBuffers[channel], msgLength);
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -311,8 +311,8 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], chanIndex[channel]);
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
+      writeToSerial(channel, chanBuffers[channel], msgLength);
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -329,8 +329,8 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], chanIndex[channel]);
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
+      writeToSerial(channel, chanBuffers[channel], msgLength);
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -347,8 +347,8 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], chanIndex[channel]);
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
+      writeToSerial(channel, chanBuffers[channel], msgLength);
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -365,8 +365,8 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], chanIndex[channel]);
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
+      writeToSerial(channel, chanBuffers[channel], msgLength);
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -382,8 +382,8 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], chanIndex[channel]);
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], chanIndex[channel]));
+      writeToSerial(channel, chanBuffers[channel], msgLength);
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
     }
     
     digitalWrite(13, !digitalRead(13));
