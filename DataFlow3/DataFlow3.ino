@@ -103,7 +103,7 @@ String buildChannelSDoutput(int channel, int* channel_buffer, int msgLength) {
   dataString += "\tChan";
   dataString += String(channel);
   dataString += "\tMsgLg\t";
-  dataString += String(channel);
+  dataString += String(msgLength);
   dataString += "\t";
 
   for(int i = 0; i < msgLength; i++) {
