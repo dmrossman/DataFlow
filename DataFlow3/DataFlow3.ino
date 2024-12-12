@@ -80,13 +80,38 @@ int addCharToMessage(byte charReceived, int channel) {
   else {
     // We are waiting for the message to start
     // Look for the leading 22's
-    if((charReceived == 22) && (chanIndex[channel] < 3)) {
-      chanBuffers[channel][chanIndex[channel]++] = charReceived;
+    if(chanIndex[channel] == 0) {
+      if(charReceived == 22) {
+        chanBuffers[channel][chanIndex[channel]++] = charReceived;
+      }
+    }
+    else if(chanIndex[channel] == 1) {
+      if(charReceived == 22) {
+        chanBuffers[channel][chanIndex[channel]++] = charReceived;
+      }
+      else {
+        // Back to the beginning
+        chanIndex[channel] = 0;
+      }
+    }
+    else if(chanIndex[channel] == 2) {
+      if(charReceived == 22) {
+        chanBuffers[channel][chanIndex[channel]++] = charReceived;
+      }
+      else {
+        // Back to the beginning
+        chanIndex[channel] = 0;
+      }
     }
     else if(chanIndex[channel] == 3) {
-      // This is the channel id.  Just append it to the message.
-      // We could check that the channel is valid?  Maybe later.
-      chanBuffers[channel][chanIndex[channel]++] = charReceived;
+      // This is the channel id.  
+      if(charReceived < 10) {
+        chanBuffers[channel][chanIndex[channel]++] = charReceived;
+      }
+      else {
+        // Back to the beginning
+        chanIndex[channel] = 0;
+      }
     }
     else if(chanIndex[channel] == 4) {
       // This is how many bytes are left in the message.  We are now "in the message".
@@ -259,8 +284,12 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], msgLength);
+      // Write all of the data to the SD card
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -276,8 +305,12 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], msgLength);
+      // Write all of the data to the SD card
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -293,8 +326,12 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], msgLength);
+      // Write all of the data to the SD card
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -311,8 +348,12 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], msgLength);
+      // Write all of the data to the SD card
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -329,8 +370,12 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], msgLength);
+      // Write all of the data to the SD card
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -347,8 +392,12 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], msgLength);
+      // Write all of the data to the SD card
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -365,8 +414,12 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], msgLength);
+      // Write all of the data to the SD card
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
     }
     
     digitalWrite(13, !digitalRead(13));
@@ -382,8 +435,12 @@ void loop() {
     int msgLength = addCharToMessage(out_char, channel);
     if(msgLength > 0) {
       // The message is complete
-      writeToSerial(channel, chanBuffers[channel], msgLength);
+      // Write all of the data to the SD card
       writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
     }
     
     digitalWrite(13, !digitalRead(13));
