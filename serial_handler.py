@@ -47,7 +47,7 @@ class SerialHandler:
         # End the message with a 255
         time_msg.append(255)
         # Now send it
-        self.sendMessage(time_msg)
+        # self.sendMessage(time_msg)
         
     def int_to_series(self, num):
         # Used to convert a time value into a series of bytes
@@ -128,13 +128,13 @@ class SerialHandler:
                         # We get in sync if we find the value 22 three times followed by a valid
                         # channel (1, 2, 4, 5)
                         if (messageIndex == 0) and (value == b'\x16'):
-                            print('got 1')
+                            # print('got 1')
                             message.clear()
                             message.append(value)
                             messageIndex = 1
                         elif (messageIndex == 1):
                             if (value == b'\x16'):
-                                print('got 2')
+                                # print('got 2')
                                 message.append(value)
                                 messageIndex += 1
                             else:
@@ -142,7 +142,7 @@ class SerialHandler:
                                 messageIndex = 0
                         elif (messageIndex == 2):
                             if (value == b'\x16'):
-                                print('got 3')
+                                # print('got 3')
                                 message.append(value)
                                 messageIndex += 1
                             else:
@@ -151,7 +151,7 @@ class SerialHandler:
                         elif (messageIndex == 3):
                             if  (value in (b'\x01', b'\x02', b'\x04', b'\x05')):
                                 # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
-                                print('got channel : ' + str(int.from_bytes(value)))
+                                # print('got channel : ' + str(int.from_bytes(value)))
                                 message.append(value)
                                 self.messageLength = self.messageLengths[int.from_bytes(value)]
                                 messageIndex += 1
