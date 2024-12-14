@@ -65,6 +65,7 @@ int addCharToMessage(byte charReceived, int channel) {
 // If we aren't in a message yet (inMessage is false), then wait for three 22's to arrive
 // this will be followed by the channel number and then the number of bytes left in the 
 // message.  The last byte should be 255.  Once the message is done, return the message length.
+
   if (chanInMessage[channel]) {
     // We are already in the message
     chanBuffers[channel][chanIndex[channel]++] = charReceived;
