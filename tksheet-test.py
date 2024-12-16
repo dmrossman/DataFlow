@@ -163,6 +163,9 @@ class demo(tk.Tk):
         elif(channel == 5):
             print('channel 5 - Beam')
             self.setBeam(intMessage)
+        elif(channel == 15):
+            print('channel 5 - Request the time')
+            self.setTime()
         return("break")     # What does this do?
         
         
@@ -237,6 +240,11 @@ class demo(tk.Tk):
                 self.sheet2.set_cell_data(row, col, val)
         self.sheet1.refresh()
         self.sheet2.refresh()
+        
+    def setTime(self):
+        # Send the current time to the arduino
+        pass
+        
         
     def checkSum(self, message):
         # Check the message and see if the checksum is valid

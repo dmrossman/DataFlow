@@ -149,16 +149,26 @@ class SerialHandler:
                                 print('Sync error: index 2')
                                 messageIndex = 0
                         elif (messageIndex == 3):
-                            if  (value in (b'\x01', b'\x02', b'\x04', b'\x05')):
-                                # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
+                            if  (value in (b'\x01', b'\x02', b'\x04', b'\x05', b'\x0F')):
+                                # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam, F = Request for time
                                 # print('got channel : ' + str(int.from_bytes(value)))
                                 message.append(value)
-                                self.messageLength = self.messageLengths[int.from_bytes(value)]
+                                # self.messageLength = self.messageLengths[int.from_bytes(value)]
                                 messageIndex += 1
-                                inSync = True
+                                # inSync = True
                             else:
                                 print('Sync error: invalid channel')
                                 messageIndex = 0
+                        elif (messageIndex == 4):
+                            # This is the number of bytes left in the message
+                            # It turns out that some messages are shorter than others.  I need
+                            # to investigate
+                            self.messageLength = int.from_bytes(value) + 4 # The four accounts for the 22, 22, 22, channel
+                            message.append(value)
+                            messageIndex += 1
+                            inSync = True
+                            
+                            
                         else:
                             # This is an invalid character
                             # Just throw the value away
