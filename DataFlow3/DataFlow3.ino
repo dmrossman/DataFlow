@@ -250,6 +250,24 @@ void setup() {
   digitalWrite(13, LOW);          // Setup is done
 }
 
+// Copied from TimeRTCSet
+/*  code to process time sync messages from the serial port   */
+#define TIME_HEADER  "T"   // Header tag for serial time sync message
+
+unsigned long processSyncMessage() {
+  unsigned long pctime = 0L;
+  const unsigned long DEFAULT_TIME = 1357041600; // Jan 1 2013 
+
+  if(Serial.find(TIME_HEADER)) {
+     pctime = Serial.parseInt();
+     return pctime;
+     if( pctime < DEFAULT_TIME) { // check the value is a valid time (greater than Jan 1 2013)
+       pctime = 0L; // return 0 to indicate that the time is not valid
+     }
+  }
+  return pctime;
+}
+
 void loop() {
   /* All this code does is wait for input from serial port 1 (channel 1).  If there was a big enough pause
    * from the last byte, then we are in a new message.  Send out the last message and start a new message.
@@ -260,12 +278,29 @@ void loop() {
    if(Serial.available()) {
       in_char = Serial.read();
       if(in_char == 10) {
-        String dataString = String(millis());
-        dataString += "\t";
-        for(int i = 0; i < serialBufferIndex; i++) {
-          dataString += serialBuffer[i];
-        }
+        // We have received the end of the message.  
+        // Do something with it.
+        serialBuffer[serialBufferIndex++] = in_char;
+        
+        // String dataString = String(millis());
+        // dataString += "\t";
+        // for(int i = 0; i < serialBufferIndex; i++) {
+        //   dataString += serialBuffer[i];
+        // }
         // Serial.println(dataString);
+        
+        // Look at the first character to see what to do with it
+        if(serialBuffer[0] == "T") {
+          // We are setting the real time clock (RTC)
+          
+        }
+        else if(serialBuffer[0] == "F") {
+          // We are fetching the current real time clock setting
+          
+        }
+        else {
+          // Error condition?
+        }
         serialBufferIndex = 0;
         writeToSD(dataString);
       }
