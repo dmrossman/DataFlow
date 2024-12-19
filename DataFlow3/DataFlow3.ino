@@ -229,6 +229,31 @@ void setupBuffers() {
   }
 }
 
+// Copied from TimeRTCSet
+
+void requestSync() {
+  // Send a request for a time sync
+  Serial.write("F");
+  writeToSD("Request sent for time sync.");
+}
+
+/*  code to process time sync messages from the serial port   */
+#define TIME_HEADER  "T"   // Header tag for serial time sync message
+
+unsigned long processSyncMessage() {
+  unsigned long pctime = 0L;
+  const unsigned long DEFAULT_TIME = 1357041600; // Jan 1 2013 
+
+  if(Serial.find(TIME_HEADER)) {
+     pctime = Serial.parseInt();
+
+     if( pctime < DEFAULT_TIME) { // check the value is a valid time (greater than Jan 1 2013)
+       pctime = 0L; // return 0 to indicate that the time is not valid
+     }
+  }
+  return pctime;
+}
+
 void setup() {
   // put your setup code here, to run once
   //Setup the LED
@@ -242,6 +267,10 @@ void setup() {
   
   // Setup the SD card
   setupSD();
+
+  // Setup real time clock
+  setSyncProvider(requestSync);   // set function to call when sync required
+  setSyncInterval(60);            // set the interval to request an updated time to every minute for testing
   
   // Initialize the buffers
   setupBuffers();
@@ -250,23 +279,6 @@ void setup() {
   digitalWrite(13, LOW);          // Setup is done
 }
 
-// Copied from TimeRTCSet
-/*  code to process time sync messages from the serial port   */
-#define TIME_HEADER  "T"   // Header tag for serial time sync message
-
-unsigned long processSyncMessage() {
-  unsigned long pctime = 0L;
-  const unsigned long DEFAULT_TIME = 1357041600; // Jan 1 2013 
-
-  if(Serial.find(TIME_HEADER)) {
-     pctime = Serial.parseInt();
-     return pctime;
-     if( pctime < DEFAULT_TIME) { // check the value is a valid time (greater than Jan 1 2013)
-       pctime = 0L; // return 0 to indicate that the time is not valid
-     }
-  }
-  return pctime;
-}
 
 void loop() {
   /* All this code does is wait for input from serial port 1 (channel 1).  If there was a big enough pause
@@ -282,13 +294,6 @@ void loop() {
         // Do something with it.
         serialBuffer[serialBufferIndex++] = in_char;
         
-        // String dataString = String(millis());
-        // dataString += "\t";
-        // for(int i = 0; i < serialBufferIndex; i++) {
-        //   dataString += serialBuffer[i];
-        // }
-        // Serial.println(dataString);
-        
         // Look at the first character to see what to do with it
         if(serialBuffer[0] == "T") {
           // We are setting the real time clock (RTC)
@@ -296,6 +301,7 @@ void loop() {
         }
         else if(serialBuffer[0] == "F") {
           // We are fetching the current real time clock setting
+          DateTime now = RTC.now();
           
         }
         else {
