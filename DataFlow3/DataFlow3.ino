@@ -232,8 +232,23 @@ void setupBuffers() {
 // Copied from TimeRTCSet
 
 void requestSync() {
+  int message[8];
+  
   // Send a request for a time sync
-  Serial.write("F");
+  // Create a message that looks similar to the DataFlow messages, 
+  // but set the "channel" (fourth byte) to zero.
+  message[0] = 22;
+  message[1] = 22;
+  message[2] = 22;
+  message[3] = 0;   // Channel
+  message[4] = 3;   // Probably not needed, but let's make it complete
+  message[5] = 20;
+  message[6] = 23;
+  message[7] = 255;
+  for(int i = 0; i < 8; i++) {
+    Serial.write(message[i]);
+  }
+  
   writeToSD("Request sent for time sync.");
 }
 
@@ -254,6 +269,40 @@ unsigned long processSyncMessage() {
   return pctime;
 }
 
+void setInitialTime() {
+  // This will attempt to set the real time clock during setup
+int retries = 0;      // Current number of retry attempts
+int maxRetries = 5;   // Max retries, duh.
+int delayTime = 1000; // Time between retries in millisecs
+bool done = false;    
+unsigned long pcTime;
+
+  while(!done) {
+    requestSync();
+    delay(delayTime);
+    if(Serial.find("T")) {
+      // We found a time message
+      pcTime = Serial.parseInt();
+
+      // Check to make sure the pcTime is "valid" (greater than Jan 1, 2013)
+      if(pcTime > 1357041600) {
+        RTC.set(pcTime);
+        done = true;
+        writeToSD("Setting RTC to: ");
+        writeToSD(pcTime);
+      }
+      else {
+        retries++;
+        if(retries > maxRetries) {
+          // Error - we didn't get a valid response
+          done = true;
+          writeToSD("Failed to get a response to set RTC.");
+        }
+      } 
+    }
+  }
+}
+
 void setup() {
   // put your setup code here, to run once
   //Setup the LED
@@ -271,6 +320,7 @@ void setup() {
   // Setup real time clock
   setSyncProvider(requestSync);   // set function to call when sync required
   setSyncInterval(60);            // set the interval to request an updated time to every minute for testing
+  setInitialTime();               // Attempt to set the initial time
   
   // Initialize the buffers
   setupBuffers();
