@@ -12,6 +12,7 @@ from tkinter import messagebox
 from tksheet import Sheet
 from serial_handler import SerialHandler
 import time
+import math
 
 class demo(tk.Tk):
     def __init__(self):
@@ -151,7 +152,10 @@ class demo(tk.Tk):
         channel = intMessage[3]
         
         # Channel 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
-        if(channel == 1):
+        if(channel == 0):
+            print('channel 0 - Request for current time')
+            self.setTime()
+        elif(channel == 1):
             print('channel 1 - Dose')
             self.setDose(intMessage)
         elif(channel == 2):
@@ -163,9 +167,6 @@ class demo(tk.Tk):
         elif(channel == 5):
             print('channel 5 - Beam')
             self.setBeam(intMessage)
-        elif(channel == 15):
-            print('channel 5 - Request the time')
-            self.setTime()
         return("break")     # What does this do?
         
         
@@ -243,7 +244,10 @@ class demo(tk.Tk):
         
     def setTime(self):
         # Send the current time to the arduino
-        pass
+        # First get the current time since the 'epoch' (1970) in seconds
+        currTime = math.floor(time.time())
+        message = 'T' + str(currTime)
+        self.serialHandler.sendMessage(message)
         
         
     def checkSum(self, message):

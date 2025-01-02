@@ -80,6 +80,10 @@ class fileDecoder():
             intMessage.append(int(val))
         
         # Depending on where the message came from, update the right part of the user interface
+        if(len(message) < 4):
+            fo.write("Error: message to short - no channel\n")
+            return()
+        
         channel = intMessage[3]
         
         # Channel 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam
@@ -89,6 +93,9 @@ class fileDecoder():
         elif(channel == 2):
             # print('channel 2 - Vac')
             self.setVac(intMessage)
+        elif(channel == 3):
+            # print('channel 2 - Vac')
+            self.setES(intMessage)
         elif(channel == 4):
             # print('channel 4 - AMU')
             self.setAMU(intMessage)
@@ -99,48 +106,69 @@ class fileDecoder():
         
         
     def setDose(self, message):
-        if(self.checkSum(message) == False):
-            fo.write('Error - Chan 1 Dose message checksum failure\n')
+        # if(self.checkSum(message) == False):
+        #     fo.write('Error - Chan 1 Dose message checksum failure\n')
         
         fo.write("Chan 1\t")
         fields = ['Dose', 'Beam Current', 'Wafer Size', 'Preset Scans', 'Estimated Time', 'Actual Time', 'Press Comp', 'Trim']
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-            fo.write(f"{val}\t")
+            # Make sure the bytes to decode are in the message
+            if(last_byte < len(message)):
+                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                fo.write(f"{val}\t")
         fo.write('\n')
         
         
     def setVac(self, message):
-        if(self.checkSum(message) == False):
-            fo.write('Error - Chan 2 Vac message checksum failure\n')
+        # if(self.checkSum(message) == False):
+        #     fo.write('Error - Chan 2 Vac message checksum failure\n')
         
         fo.write("Chan 2\t")
         fields = ['Pressure P1', 'Pressure P2', 'Pressure P3', 'E.S. Press Start', 'E.S. Press Stop']
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-            fo.write(f"{val}\t")
+            # Make sure the bytes to decode are in the message
+            if(last_byte < len(message)):
+                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                fo.write(f"{val}\t")
+        fo.write('\n')
+        
+    def setES(self, message):
+        # if(self.checkSum(message) == False):
+        #     fo.write('Error - Chan 2 Vac message checksum failure\n')
+        
+        fo.write("Chan 3\t")
+        fields = []
+        for field in fields:
+            # Calculate the value for the field
+            sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
+            # Make sure the bytes to decode are in the message
+            if(last_byte < len(message)):
+                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                fo.write(f"{val}\t")
         fo.write('\n')
         
     def setAMU(self, message):
-        if(self.checkSum(message) == False):
-            fo.write('Error - Chan 4 AMU message checksum failure\n')
+        # if(self.checkSum(message) == False):
+        #     fo.write('Error - Chan 4 AMU message checksum failure\n')
         
         fo.write("Chan 4\t")
         fields = ['Beam Energy', 'A.M.U.', 'Magnet Current']
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-            fo.write(f"{val}\t")
+            # Make sure the bytes to decode are in the message
+            if(last_byte < len(message)):
+                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                fo.write(f"{val}\t")
         fo.write('\n')
 
     def setBeam(self, message):
-        if(self.checkSum(message) == False):
-            fo.write('Error - Chan 5 Beam message checksum failure\n')
+        # if(self.checkSum(message) == False):
+        #     fo.write('Error - Chan 5 Beam message checksum failure\n')
         
         fo.write("Chan 5\t")
         fields = ['Source Arc I', 'Source Arc V', 
@@ -151,8 +179,10 @@ class fileDecoder():
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-            fo.write(f"{val}\t")
+            # Make sure the bytes to decode are in the message
+            if(last_byte < len(message)):
+                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                fo.write(f"{val}\t")
         fo.write('\n')
         
     def checkSum(self, message):
@@ -223,8 +253,9 @@ class fileDecoder():
         
     
 fd = fileDecoder()
-fileName = 'C:/Users/DRossman/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
-outputFileName = 'C:/Users/DRossman/Downloads/DataFlow-main/output.txt'
+# fileName = 'C:/Users/DRossman/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
+fileName = 'C:/Users/dmros/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
+outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 f = open(fileName)
 fo = open(outputFileName, "w")
  
@@ -238,8 +269,8 @@ while(line):
     lineData = line.split()
     
     # Skip messages with length = 8
-    if(lineData[3] != '8'):
-        fd.decodeMessage(lineData[4:])
+    #if(lineData[3] != '8'):
+    fd.decodeMessage(lineData[4:])
     
 f.close()
 fo.close()

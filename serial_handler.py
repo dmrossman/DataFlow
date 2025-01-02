@@ -150,7 +150,7 @@ class SerialHandler:
                                 messageIndex = 0
                         elif (messageIndex == 3):
                             if  (value in (b'\x01', b'\x02', b'\x04', b'\x05', b'\x0F')):
-                                # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam, F = Request for time
+                                # This is the channel : 1 = Dose, 2 = Vac, 4 = AMU, 5 = Beam, 3 = End Station?, 0 = Request for time
                                 # print('got channel : ' + str(int.from_bytes(value)))
                                 message.append(value)
                                 # self.messageLength = self.messageLengths[int.from_bytes(value)]
