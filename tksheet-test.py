@@ -142,6 +142,7 @@ class demo(tk.Tk):
     
     def serialCallback(self, message):
         # Decode the message coming from the arduino.  
+        # print(message)
         
         # First convert the message from bytes to ints - just easier to deal with
         intMessage = []
