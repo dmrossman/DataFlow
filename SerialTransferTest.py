@@ -22,28 +22,33 @@ if __name__ == '__main__':
             ###################################################################
             # Send a list
             ###################################################################
-            list_ = [1, 3]
-            list_size = link.tx_obj(list_)
-            send_size += list_size
+            # list_ = [1, 3]
+            # list_size = link.tx_obj(list_)
+            # send_size += list_size
             
             ###################################################################
             # Send a string
             ###################################################################
-            str_ = 'hello'
-            str_size = link.tx_obj(str_, send_size) - send_size
-            send_size += str_size
+            # str_ = 'hello'
+            # str_size = link.tx_obj(str_, send_size) - send_size
+            # send_size += str_size
             
             ###################################################################
             # Send a float
             ###################################################################
-            float_ = 5.234
-            float_size = link.tx_obj(float_, send_size) - send_size
-            send_size += float_size
+            # float_ = 5.234
+            # float_size = link.tx_obj(float_, send_size) - send_size
+            # send_size += float_size
             
+            int_ = 13
+            int_size = link.tx_obj(int_)
+            send_size += int_size
+            # print('Send size:')
+            # print(send_size)
             ###################################################################
             # Transmit all the data to send in a single packet
             ###################################################################
-            link.send(send_size)
+            link.send(send_size, 27)
             
             ##################################################### ##############
             # Wait for a response and report any errors while receiving packets
@@ -60,32 +65,37 @@ if __name__ == '__main__':
                     else:
                         print('ERROR: {}'.format(link.status.name))
             
+            rec_int_ = link.rx_obj(obj_type=type(int_), obj_byte_size=int_size)
+            
             ###################################################################
             # Parse response list
             ###################################################################
-            rec_list_  = link.rx_obj(obj_type=type(list_),
-                                     obj_byte_size=list_size,
-                                     list_format='i')
+            # rec_list_  = link.rx_obj(obj_type=type(list_),
+            #                          obj_byte_size=list_size,
+            #                          list_format='i')
             
             ###################################################################
             # Parse response string
             ###################################################################
-            rec_str_   = link.rx_obj(obj_type=type(str_),
-                                     obj_byte_size=str_size,
-                                     start_pos=list_size)
+            # rec_str_   = link.rx_obj(obj_type=type(str_),
+            #                         obj_byte_size=str_size,
+            #                         start_pos=list_size)
             
             ###################################################################
             # Parse response float
             ###################################################################
-            rec_float_ = link.rx_obj(obj_type=type(float_),
-                                     obj_byte_size=float_size,
-                                     start_pos=(list_size + str_size))
+            # rec_float_ = link.rx_obj(obj_type=type(float_),
+            #                          obj_byte_size=float_size,
+            #                          start_pos=(list_size + str_size))
             
             ###################################################################
             # Display the received data
             ###################################################################
-            print('SENT: {} {} {}'.format(list_, str_, float_))
-            print('RCVD: {} {} {}'.format(rec_list_, rec_str_, rec_float_))
+            # print('SENT: {} {} {}'.format(list_, str_, float_))
+            # print('RCVD: {} {} {}'.format(rec_list_, rec_str_, rec_float_))
+            # print(' ')
+            print('SENT: {}'.format(int_))
+            print('RCVD: {}'.format(rec_int_))
             print(' ')
     
     except KeyboardInterrupt:
