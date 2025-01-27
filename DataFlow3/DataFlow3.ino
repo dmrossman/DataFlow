@@ -286,7 +286,7 @@ unsigned long pcTime;
 
       // Check to make sure the pcTime is "valid" (greater than Jan 1, 2013)
       if(pcTime > 1357041600) {
-        RTC.set(pcTime);
+        // RTC.set(pcTime);
         done = true;
         writeToSD("Setting RTC to: ");
         writeToSD(pcTime);
@@ -318,9 +318,9 @@ void setup() {
   setupSD();
 
   // Setup real time clock
-  setSyncProvider(requestSync);   // set function to call when sync required
-  setSyncInterval(60);            // set the interval to request an updated time to every minute for testing
-  setInitialTime();               // Attempt to set the initial time
+  // setSyncProvider(requestSync);   // set function to call when sync required
+  // setSyncInterval(60);            // set the interval to request an updated time to every minute for testing
+  // setInitialTime();               // Attempt to set the initial time
   
   // Initialize the buffers
   setupBuffers();
@@ -345,24 +345,24 @@ void loop() {
         serialBuffer[serialBufferIndex++] = in_char;
         
         // Look at the first character to see what to do with it
-        if(serialBuffer[0] == "T") {
+        // if(serialBuffer[0] == "T") {
           // We are setting the real time clock (RTC)
           
         }
-        else if(serialBuffer[0] == "F") {
+        // else if(serialBuffer[0] == "F") {
           // We are fetching the current real time clock setting
-          DateTime now = RTC.now();
+        //  DateTime now = RTC.now();
           
-        }
+        // }
         else {
           // Error condition?
         }
         serialBufferIndex = 0;
-        writeToSD(dataString);
-      }
-      else {
-        serialBuffer[serialBufferIndex++] = in_char;
-      }
+        // writeToSD(dataString);
+      // }
+      // else {
+        // serialBuffer[serialBufferIndex++] = in_char;
+      // }
    }
    
   if (Serial1.available()) {        // If anything comes in Serial1
