@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 """
+Created on Thu Jan 30 10:20:41 2025
+
+@author: Dennis.Rossman
+"""
+
+# -*- coding: utf-8 -*-
+"""
 Created on Sun Jan  5 13:23:05 2025
 
 @author: dmros
@@ -16,34 +23,28 @@ if __name__ == '__main__':
         link.open()
         time.sleep(2) # allow some time for the Arduino to completely reset
         
+        packetID = 0
+        
         while True:
             send_size = 0
             
             ###################################################################
             # Send a list
             ###################################################################
-            list_ = [1, 3]
-            list_size = link.tx_obj(list_)
+            byteList = bytes([22, 22, 22, 1, 3, 20, 23, 255])
+            list_size = link.tx_obj(byteList, 0, byte_format='@', val_type_override='c')
+            print(list_size)
+            
             send_size += list_size
-            
-            ###################################################################
-            # Send a string
-            ###################################################################
-            str_ = 'hello'
-            str_size = link.tx_obj(str_, send_size) - send_size
-            send_size += str_size
-            
-            ###################################################################
-            # Send a float
-            ###################################################################
-            float_ = 5.234
-            float_size = link.tx_obj(float_, send_size) - send_size
-            send_size += float_size
+            # print("Int size is {}".format(int_size))
             
             ###################################################################
             # Transmit all the data to send in a single packet
             ###################################################################
-            link.send(send_size)
+            link.send(send_size, packetID)
+            packetID = packetID + 1
+            if(packetID > 255):
+                packetID = 0
             
             ##################################################### ##############
             # Wait for a response and report any errors while receiving packets
@@ -63,29 +64,14 @@ if __name__ == '__main__':
             ###################################################################
             # Parse response list
             ###################################################################
-            rec_list_  = link.rx_obj(obj_type=type(list_),
-                                     obj_byte_size=list_size,
-                                     list_format='i')
-            
-            ###################################################################
-            # Parse response string
-            ###################################################################
-            rec_str_   = link.rx_obj(obj_type=type(str_),
-                                     obj_byte_size=str_size,
-                                     start_pos=list_size)
-            
-            ###################################################################
-            # Parse response float
-            ###################################################################
-            rec_float_ = link.rx_obj(obj_type=type(float_),
-                                     obj_byte_size=float_size,
-                                     start_pos=(list_size + str_size))
+            rec_list_  = link.rx_obj(obj_type=type(byteList),
+                                     obj_byte_size=list_size)
             
             ###################################################################
             # Display the received data
             ###################################################################
-            print('SENT: {} {} {}'.format(list_, str_, float_))
-            print('RCVD: {} {} {}'.format(rec_list_, rec_str_, rec_float_))
+            print('SENT: {}'.format(byteList))
+            print('RCVD: {}'.format(rec_list_))
             print(' ')
     
     except KeyboardInterrupt:

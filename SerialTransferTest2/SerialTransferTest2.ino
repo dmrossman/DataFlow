@@ -2,12 +2,18 @@
 
 
 SerialTransfer myTransfer;
+char chanBufferTx[255];
+char chanBufferRec[255];
 
 
 void setup()
 {
   Serial.begin(115200);
   myTransfer.begin(Serial);
+  for(char i = 0; i < 255; i++) {
+    chanBufferRec[i] = 0;
+    chanBufferTx[i] = i;
+  }
 }
 
 
@@ -23,11 +29,12 @@ void loop()
     unsigned long myInt = 0;
     uint16_t recSize = 0;
 
-    recSize = myTransfer.rxObj(myInt);
-
     myInt = myTransfer.currentPacketID();
 
-    recSize = myTransfer.txObj(myInt);
+    //for(uint8_t i = 2; i < myTransfer.bytesRead; i++) 
+    //  chanBufferRec[i] = myTransfer.packet.rxBuff[i];
+    myTransfer.rxObj(chanBufferRec);
+    recSize = myTransfer.txObj(chanBufferRec, 0, myTransfer.bytesRead);
     myTransfer.sendData(recSize);
 
   }
