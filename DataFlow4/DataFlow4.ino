@@ -1,12 +1,18 @@
-// DataFlow 4
+// DataFlow 3
 //   This is an attempt to capture data that is going in between an NV10 and the DataFlow computer.  So far it looks like DataFlow
 //    queries the implanter (because we don't see a constant stream of data coming out of the implanter through the interface
 //    box).  It also looks like the communication is 9600 baud, 8 data bits, and even parity.  I want to start off by looking 
 //    at what is coming from DataFlow to the implanter (query command?) to see if it is always the same.  Then I want to look 
 //    at the data coming back from the implanter and see if we can parse out how the data is formated.
 //
+//    DataFlow 3 is changing from 2 by:
+//      * Changing the way that the beginning and end of messages are sensed.  I noticed that messages from the implanter can 
+//        can have pauses in them.  We need to look for the message start (Three 22's followed by the channel number and number
+//        of remaining bytes.
+//      * Add code to handle the real time clock on the Teensy.  I need to have a message from the computer at startup that 
+//        sends the current time in the seconds from 1970 format.
 //    DataFlow 4 is changing from 3 by:
-//      * Rewrite the code to use the PySerial library to see if that is easier
+//      * Rewriting the code to match some of the suggestions from https://forum.arduino.cc/t/serial-input-basics-updated/382007
 
 // These includes are for the SD card on the Teensy
 #include <SD.h>
@@ -282,7 +288,7 @@ unsigned long pcTime;
 
       // Check to make sure the pcTime is "valid" (greater than Jan 1, 2013)
       if(pcTime > 1357041600) {
-        RTC.set(pcTime);
+        // RTC.set(pcTime);
         done = true;
         writeToSD("Setting RTC to: ");
         writeToSD(pcTime);
@@ -299,6 +305,188 @@ unsigned long pcTime;
   }
 }
 
+void handleSerial1() {
+  
+  if (Serial1.available()) {        // If anything comes in Serial1
+    
+    char in_char = Serial1.read();
+    int channel = 0;
+
+    // Add the character to the buffer and see if the buffer is complete
+    int msgLength = addCharToMessage(in_char, channel);
+    if(msgLength > 0) {
+      // The message is complete
+      // Write all of the data to the SD card
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
+    }
+  }  // End of channel 1
+}
+
+void handleSerial2() {
+  if (Serial2.available()) {        // If anything comes in Serial1
+    
+    char in_char = Serial2.read();
+    int channel = 0;
+
+    // Add the character to the buffer and see if the buffer is complete
+    int msgLength = addCharToMessage(in_char, channel);
+    if(msgLength > 0) {
+      // The message is complete
+      // Write all of the data to the SD card
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
+    }
+  }  // End of channel 2
+}
+
+void handleSerial3() {
+  if (Serial3.available()) {        // If anything comes in Serial1
+    
+    char in_char = Serial3.read();
+    int channel = 0;
+
+    // Add the character to the buffer and see if the buffer is complete
+    int msgLength = addCharToMessage(in_char, channel);
+    if(msgLength > 0) {
+      // The message is complete
+      // Write all of the data to the SD card
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
+    }
+  }  // End of channel 3  
+}
+
+void handleSerial4() {
+  if (Serial4.available()) {        // If anything comes in Serial1
+    
+    char in_char = Serial4.read();
+    int channel = 0;
+
+    // Add the character to the buffer and see if the buffer is complete
+    int msgLength = addCharToMessage(in_char, channel);
+    if(msgLength > 0) {
+      // The message is complete
+      // Write all of the data to the SD card
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
+    }
+  }  // End of channel 4  
+}
+
+void handleSerial5() {
+  if (Serial5.available()) {        // If anything comes in Serial1
+    
+    char in_char = Serial5.read();
+    int channel = 0;
+
+    // Add the character to the buffer and see if the buffer is complete
+    int msgLength = addCharToMessage(in_char, channel);
+    if(msgLength > 0) {
+      // The message is complete
+      // Write all of the data to the SD card
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
+    }
+  }  // End of channel 5  
+}
+
+void handleSerial6() {
+  if (Serial6.available()) {        // If anything comes in Serial1
+    
+    char in_char = Serial6.read();
+    int channel = 0;
+
+    // Add the character to the buffer and see if the buffer is complete
+    int msgLength = addCharToMessage(in_char, channel);
+    if(msgLength > 0) {
+      // The message is complete
+      // Write all of the data to the SD card
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
+    }
+  }  // End of channel 6  
+}
+
+void handleSerial7() {
+  if (Serial7.available()) {        // If anything comes in Serial1
+    
+    char in_char = Serial7.read();
+    int channel = 0;
+
+    // Add the character to the buffer and see if the buffer is complete
+    int msgLength = addCharToMessage(in_char, channel);
+    if(msgLength > 0) {
+      // The message is complete
+      // Write all of the data to the SD card
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
+    }
+  }  // End of channel 7  
+}
+
+void handleSerial8() {
+  if (Serial8.available()) {        // If anything comes in Serial1
+    
+    char in_char = Serial8.read();
+    int channel = 0;
+
+    // Add the character to the buffer and see if the buffer is complete
+    int msgLength = addCharToMessage(in_char, channel);
+    if(msgLength > 0) {
+      // The message is complete
+      // Write all of the data to the SD card
+      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      // Send only the long messages to the python code
+      if(msgLength > 8) {
+        writeToSerial(channel, chanBuffers[channel], msgLength);
+      }
+    }
+  }  // End of channel 8  
+}
+
+void setupLEDs() {
+  // In the second version of the board, I added 5 leds to act as indicators
+  // for communication with the different modules: Dose, AMU, Beam, Vac, and ES
+  // These are connected as follows (to match labels on the board)
+  // Diode 1 - Dose - Pin 25
+  // Diode 2 - AMU  - Pin 29
+  // Diode 3 - Beam - Pin 30
+  // Diode 4 - Vac  - Pin 31
+  // Diode 5 - ES   - Pin 35
+  pinMode(25, OUTPUT);
+  pinMode(29, OUTPUT);
+  pinMode(30, OUTPUT);
+  pinMode(31, OUTPUT);
+  pinMode(35, OUTPUT);
+  
+  // Of course the LED for the Teensy4.1 is pin 13
+  pinMode(13, OUTPUT);
+
+  // Let's test to make sure the LEDs are lighting and in the right order
+  digitalWrite(13, HIGH);           // Turn on the LED - just show we are doing something
+}
 void setup() {
   // put your setup code here, to run once
   //Setup the LED
@@ -314,9 +502,9 @@ void setup() {
   setupSD();
 
   // Setup real time clock
-  setSyncProvider(requestSync);   // set function to call when sync required
-  setSyncInterval(60);            // set the interval to request an updated time to every minute for testing
-  setInitialTime();               // Attempt to set the initial time
+  // setSyncProvider(requestSync);   // set function to call when sync required
+  // setSyncInterval(60);            // set the interval to request an updated time to every minute for testing
+  // setInitialTime();               // Attempt to set the initial time
   
   // Initialize the buffers
   setupBuffers();
@@ -327,9 +515,10 @@ void setup() {
 
 
 void loop() {
-  /* All this code does is wait for input from serial port 1 (channel 1).  If there was a big enough pause
-   * from the last byte, then we are in a new message.  Send out the last message and start a new message.
+  /* All this code does is wait for look for input from the serial ports.
    */
+unsigned long currentMillis = millis();
+int ledState = LOW;
 
   // If anything comes in on the USB serial port, this is me typing a diagnostics message.
   // When we get to the return, build a string and spit it out.
@@ -341,197 +530,50 @@ void loop() {
         serialBuffer[serialBufferIndex++] = in_char;
         
         // Look at the first character to see what to do with it
-        if(serialBuffer[0] == "T") {
+        // if(serialBuffer[0] == "T") {
           // We are setting the real time clock (RTC)
           
         }
-        else if(serialBuffer[0] == "F") {
+        // else if(serialBuffer[0] == "F") {
           // We are fetching the current real time clock setting
-          DateTime now = RTC.now();
+        //  DateTime now = RTC.now();
           
-        }
+        // }
         else {
           // Error condition?
         }
         serialBufferIndex = 0;
-        writeToSD(dataString);
-      }
-      else {
-        serialBuffer[serialBufferIndex++] = in_char;
-      }
+        // writeToSD(dataString);
+      // }
+      // else {
+        // serialBuffer[serialBufferIndex++] = in_char;
+      // }
    }
+
+   handleSerial1();
+   handleSerial2();
+   handleSerial3();
+   handleSerial4();
+   handleSerial5();
+   handleSerial6();
+   handleSerial7();
+   handleSerial8();
+
+   // Hearbeat - just so I know the code is running
+   if (currentMillis - previousMillis >= 1000) {
+    // save the last time you blinked the LED
+    previousMillis = currentMillis;
+
+    // if the LED is off turn it on and vice-versa:
+    if (ledState == LOW) {
+      ledState = HIGH;
+    } else {
+      ledState = LOW;
+    }
+
+    // set the LED with the ledState of the variable:
+    digitalWrite(ledPin, ledState);
+  }
    
-  if (Serial1.available()) {        // If anything comes in Serial1
-    
-    in_char = Serial1.read();
-    // out_char = in_char & 0b01111111;   // Get rid of the top bit (partiy bit)
-    out_char = in_char;
-    int channel = 0;
-
-    // Add the character to the buffer and see if the buffer is complete
-    int msgLength = addCharToMessage(out_char, channel);
-    if(msgLength > 0) {
-      // The message is complete
-      // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
-      // Send only the long messages to the python code
-      if(msgLength > 8) {
-        writeToSerial(channel, chanBuffers[channel], msgLength);
-      }
-    }
-    
-    digitalWrite(13, !digitalRead(13));
-  }  // End of channel 1
-
-  if (Serial2.available()) {        // If anything comes in Serial2
-    in_char = Serial2.read();
-    // out_char = in_char & 0b01111111;   // Get rid of the top bit (partiy bit)
-    out_char = in_char;
-    int channel = 1;
-
-    // Add the character to the buffer and see if the buffer is complete
-    int msgLength = addCharToMessage(out_char, channel);
-    if(msgLength > 0) {
-      // The message is complete
-      // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
-      // Send only the long messages to the python code
-      if(msgLength > 8) {
-        writeToSerial(channel, chanBuffers[channel], msgLength);
-      }
-    }
-    
-    digitalWrite(13, !digitalRead(13));
-  }  // End of channel 2
-
-  if (Serial3.available()) {        // If anything comes in Serial3
-    in_char = Serial3.read();
-    // out_char = in_char & 0b01111111;   // Get rid of the top bit (partiy bit)
-    out_char = in_char;
-    int channel = 2;
-
-    // Add the character to the buffer and see if the buffer is complete
-    int msgLength = addCharToMessage(out_char, channel);
-    if(msgLength > 0) {
-      // The message is complete
-      // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
-      // Send only the long messages to the python code
-      if(msgLength > 8) {
-        writeToSerial(channel, chanBuffers[channel], msgLength);
-      }
-    }
-    
-    digitalWrite(13, !digitalRead(13));
-  }  // End of channel 3
-
-
-  if (Serial4.available()) {        // If anything comes in Serial4
-    in_char = Serial4.read();
-    // out_char = in_char & 0b01111111;   // Get rid of the top bit (partiy bit)
-    out_char = in_char;
-    int channel = 3;
-
-    // Add the character to the buffer and see if the buffer is complete
-    int msgLength = addCharToMessage(out_char, channel);
-    if(msgLength > 0) {
-      // The message is complete
-      // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
-      // Send only the long messages to the python code
-      if(msgLength > 8) {
-        writeToSerial(channel, chanBuffers[channel], msgLength);
-      }
-    }
-    
-    digitalWrite(13, !digitalRead(13));
-  }  // End of channel 4
-
-
-  if (Serial5.available()) {        // If anything comes in Serial5
-    in_char = Serial5.read();
-    // out_char = in_char & 0b01111111;   // Get rid of the top bit (partiy bit)
-    out_char = in_char;
-    int channel = 4;
-
-    // Add the character to the buffer and see if the buffer is complete
-    int msgLength = addCharToMessage(out_char, channel);
-    if(msgLength > 0) {
-      // The message is complete
-      // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
-      // Send only the long messages to the python code
-      if(msgLength > 8) {
-        writeToSerial(channel, chanBuffers[channel], msgLength);
-      }
-    }
-    
-    digitalWrite(13, !digitalRead(13));
-  }  // End of channel 5
-
-
-  if (Serial6.available()) {        // If anything comes in Serial6
-    in_char = Serial6.read();
-    // out_char = in_char & 0b01111111;   // Get rid of the top bit (partiy bit)
-    out_char = in_char;
-    int channel = 5;
-
-    // Add the character to the buffer and see if the buffer is complete
-    int msgLength = addCharToMessage(out_char, channel);
-    if(msgLength > 0) {
-      // The message is complete
-      // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
-      // Send only the long messages to the python code
-      if(msgLength > 8) {
-        writeToSerial(channel, chanBuffers[channel], msgLength);
-      }
-    }
-    
-    digitalWrite(13, !digitalRead(13));
-  }  // End of channel 6
-
-
-  if (Serial7.available()) {        // If anything comes in Serial7
-    in_char = Serial7.read();
-    // out_char = in_char & 0b01111111;   // Get rid of the top bit (partiy bit)
-    out_char = in_char;
-    int channel = 6;
-
-    // Add the character to the buffer and see if the buffer is complete
-    int msgLength = addCharToMessage(out_char, channel);
-    if(msgLength > 0) {
-      // The message is complete
-      // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
-      // Send only the long messages to the python code
-      if(msgLength > 8) {
-        writeToSerial(channel, chanBuffers[channel], msgLength);
-      }
-    }
-    
-    digitalWrite(13, !digitalRead(13));
-  }  // End of channel 7
-
-  if (Serial8.available()) {        // If anything comes in Serial8
-    in_char = Serial8.read();
-    // out_char = in_char & 0b01111111;   // Get rid of the top bit (partiy bit)
-    out_char = in_char;
-    int channel = 7;
-
-    // Add the character to the buffer and see if the buffer is complete
-    int msgLength = addCharToMessage(out_char, channel);
-    if(msgLength > 0) {
-      // The message is complete
-      // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
-      // Send only the long messages to the python code
-      if(msgLength > 8) {
-        writeToSerial(channel, chanBuffers[channel], msgLength);
-      }
-    }
-    
-    digitalWrite(13, !digitalRead(13));
-  }  // End of channel 8
-
+  
 }
