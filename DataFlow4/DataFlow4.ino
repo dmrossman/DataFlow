@@ -360,7 +360,7 @@ void handleSerial2() {
   if (Serial2.available()) {        // If anything comes in Serial1
     
     char in_char = Serial2.read();
-    int channel = 1;
+    int channel = 0;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -380,7 +380,7 @@ void handleSerial3() {
   if (Serial3.available()) {        // If anything comes in Serial1
     
     char in_char = Serial3.read();
-    int channel = 2;
+    int channel = 0;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -400,7 +400,7 @@ void handleSerial4() {
   if (Serial4.available()) {        // If anything comes in Serial1
     
     char in_char = Serial4.read();
-    int channel = 3;
+    int channel = 0;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -420,7 +420,7 @@ void handleSerial5() {
   if (Serial5.available()) {        // If anything comes in Serial1
     
     char in_char = Serial5.read();
-    int channel = 4;
+    int channel = 0;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -440,7 +440,7 @@ void handleSerial6() {
   if (Serial6.available()) {        // If anything comes in Serial1
     
     char in_char = Serial6.read();
-    int channel = 5;
+    int channel = 0;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -460,7 +460,7 @@ void handleSerial7() {
   if (Serial7.available()) {        // If anything comes in Serial1
     
     char in_char = Serial7.read();
-    int channel = 6;
+    int channel = 0;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -480,7 +480,7 @@ void handleSerial8() {
   if (Serial8.available()) {        // If anything comes in Serial1
     
     char in_char = Serial8.read();
-    int channel = 7;
+    int channel = 0;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -644,4 +644,7 @@ const long interval = 1000;
 
     // set the LED with the ledState of the variable:
     digitalWrite(13, ledState);
+  }
+
+  
 }
