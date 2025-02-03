@@ -14,6 +14,18 @@
 //    DataFlow 4 is changing from 3 by:
 //      * Rewriting the code to match some of the suggestions from https://forum.arduino.cc/t/serial-input-basics-updated/382007
 
+// constants won't change. Used here to set a pin number:
+const int ledPin = LED_BUILTIN;       // the number of the builtin LED pin (13)
+const int led1PinDose = 33;           // the number of the LED pin for Dose
+const int led2PinAMU  = 37;           // the number of the LED pin for AMU
+const int led3PinBeam = 38;           // the number of the LED pin for Beam
+const int led4PinVac  = 39;           // the number of the LED pin for Vac
+const int led5PinES   = 13;           // the number of the LED pin for ES... whoops, this the same as the builtin.  Good thing ES doesn't work?  TBD: Fix in next rev
+
+// Timer variable for the hearbeat
+unsigned long previousMillis = 0;
+int ledState = LOW;
+
 // These includes are for the SD card on the Teensy
 #include <SD.h>
 #include <SPI.h>
@@ -48,7 +60,7 @@ bool chanInMessage[numberOfMessages];
 
 void writeToSD(String dataString) {
   // open the file.
-  File dataFile = SD.open("dataFlowLog3.txt", FILE_WRITE);
+  File dataFile = SD.open("dataFlowLog4.txt", FILE_WRITE);
 
   // if the file is available, write to it:
   if (dataFile) {
@@ -189,6 +201,24 @@ void setupSerial() {
   Serial6.begin(speed, config);   // Serial 6 port
   Serial7.begin(speed, config);   // Serial 7 port
   Serial8.begin(speed, config);   // Serial 8 port
+
+  // Just out of curiousity, what do the RX pins read with no connection vs with a connection?
+  Serial.print("RX1 : ");
+  Serial.println(digitalRead(0));
+  Serial.print("RX2 : ");
+  Serial.println(digitalRead(7));
+  Serial.print("RX3 : ");
+  Serial.println(digitalRead(15));
+  Serial.print("RX4 : ");
+  Serial.println(digitalRead(16));
+  Serial.print("RX5 : ");
+  Serial.println(digitalRead(21));
+  Serial.print("RX6 : ");
+  Serial.println(digitalRead(25));
+  Serial.print("RX7 : ");
+  Serial.println(digitalRead(28));
+  Serial.print("RX9 : ");
+  Serial.println(digitalRead(34));
  }
 
 void setupSD() {
@@ -330,7 +360,7 @@ void handleSerial2() {
   if (Serial2.available()) {        // If anything comes in Serial1
     
     char in_char = Serial2.read();
-    int channel = 0;
+    int channel = 1;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -350,7 +380,7 @@ void handleSerial3() {
   if (Serial3.available()) {        // If anything comes in Serial1
     
     char in_char = Serial3.read();
-    int channel = 0;
+    int channel = 2;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -370,7 +400,7 @@ void handleSerial4() {
   if (Serial4.available()) {        // If anything comes in Serial1
     
     char in_char = Serial4.read();
-    int channel = 0;
+    int channel = 3;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -390,7 +420,7 @@ void handleSerial5() {
   if (Serial5.available()) {        // If anything comes in Serial1
     
     char in_char = Serial5.read();
-    int channel = 0;
+    int channel = 4;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -410,7 +440,7 @@ void handleSerial6() {
   if (Serial6.available()) {        // If anything comes in Serial1
     
     char in_char = Serial6.read();
-    int channel = 0;
+    int channel = 5;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -430,7 +460,7 @@ void handleSerial7() {
   if (Serial7.available()) {        // If anything comes in Serial1
     
     char in_char = Serial7.read();
-    int channel = 0;
+    int channel = 6;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -450,7 +480,7 @@ void handleSerial8() {
   if (Serial8.available()) {        // If anything comes in Serial1
     
     char in_char = Serial8.read();
-    int channel = 0;
+    int channel = 7;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
@@ -469,23 +499,56 @@ void handleSerial8() {
 void setupLEDs() {
   // In the second version of the board, I added 5 leds to act as indicators
   // for communication with the different modules: Dose, AMU, Beam, Vac, and ES
-  // These are connected as follows (to match labels on the board)
-  // Diode 1 - Dose - Pin 25
-  // Diode 2 - AMU  - Pin 29
-  // Diode 3 - Beam - Pin 30
-  // Diode 4 - Vac  - Pin 31
-  // Diode 5 - ES   - Pin 35
-  pinMode(25, OUTPUT);
-  pinMode(29, OUTPUT);
-  pinMode(30, OUTPUT);
-  pinMode(31, OUTPUT);
-  pinMode(35, OUTPUT);
+  // These are connected as follows (to match labels on the board) - note, don't use
+  // the numbering in KiCad.  It doesn't match the helter skelter Teensy4.1 numbering
+  // Diode 1 - Dose - Pin 33
+  // Diode 2 - AMU  - Pin 37
+  // Diode 3 - Beam - Pin 38
+  // Diode 4 - Vac  - Pin 39
+  // Diode 5 - ES   - Pin 13 (mistake - wired to the builtin LED - skip for now - Diode 5 will always be the opposite state as the builtin LED)
+  // The extra LEDs are on with a LOW and off with a HIGH
+
+  pinMode(led1PinDose, OUTPUT);
+  pinMode(led2PinAMU, OUTPUT);
+  pinMode(led3PinBeam, OUTPUT);
+  pinMode(led4PinVac, OUTPUT);
+  pinMode(led5PinES, OUTPUT);
   
   // Of course the LED for the Teensy4.1 is pin 13
-  pinMode(13, OUTPUT);
+  pinMode(ledPin, OUTPUT);
 
   // Let's test to make sure the LEDs are lighting and in the right order
-  digitalWrite(13, HIGH);           // Turn on the LED - just show we are doing something
+  digitalWrite(ledPin, HIGH);
+  digitalWrite(led1PinDose, LOW);
+  digitalWrite(led2PinAMU, LOW);
+  digitalWrite(led3PinBeam, LOW);
+  digitalWrite(led4PinVac, LOW);
+  // digitalWrite(led5PinES, LOW);
+
+  delay(500);
+  digitalWrite(ledPin, LOW);
+  digitalWrite(led1PinDose, HIGH);
+  digitalWrite(led2PinAMU, HIGH);
+  digitalWrite(led3PinBeam, HIGH);
+  digitalWrite(led4PinVac, HIGH);
+  // digitalWrite(led5PinES, HIGH);
+
+  delay(500);
+  digitalWrite(led1PinDose, LOW);
+  delay(500);
+  digitalWrite(led1PinDose, HIGH);
+  digitalWrite(led2PinAMU, LOW);
+  delay(500);
+  digitalWrite(led2PinAMU, HIGH);
+  digitalWrite(led3PinBeam, LOW);
+  delay(500);
+  digitalWrite(led3PinBeam, HIGH);
+  digitalWrite(led4PinVac, LOW);
+  delay(500);
+  digitalWrite(led4PinVac, HIGH);
+  // digitalWrite(led5PinES, HIGH);
+  delay(500);
+  // digitalWrite(led5PinES, HIGH);
 }
 void setup() {
   // put your setup code here, to run once
@@ -508,6 +571,9 @@ void setup() {
   
   // Initialize the buffers
   setupBuffers();
+
+  // Setup and test LEDS
+  setupLEDs();
   
   delay(500);
   digitalWrite(13, LOW);          // Setup is done
@@ -517,8 +583,11 @@ void setup() {
 void loop() {
   /* All this code does is wait for look for input from the serial ports.
    */
+
+
 unsigned long currentMillis = millis();
-int ledState = LOW;
+const long interval = 1000;
+
 
   // If anything comes in on the USB serial port, this is me typing a diagnostics message.
   // When we get to the return, build a string and spit it out.
@@ -560,8 +629,10 @@ int ledState = LOW;
    handleSerial8();
 
    // Hearbeat - just so I know the code is running
-   if (currentMillis - previousMillis >= 1000) {
+   currentMillis = millis();
+   if ((currentMillis - previousMillis) > interval) {
     // save the last time you blinked the LED
+    Serial.println("Heartbeat");
     previousMillis = currentMillis;
 
     // if the LED is off turn it on and vice-versa:
@@ -572,8 +643,5 @@ int ledState = LOW;
     }
 
     // set the LED with the ledState of the variable:
-    digitalWrite(ledPin, ledState);
-  }
-   
-  
+    digitalWrite(13, ledState);
 }
