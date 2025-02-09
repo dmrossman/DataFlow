@@ -183,13 +183,19 @@ class demo(tk.Tk):
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-            if(sheet == 1):
-                self.sheet1.set_cell_data(row, col, val)
-            else:
-                self.sheet2.set_cell_data(row, col, val)
-        self.sheet1.refresh()
-        self.sheet2.refresh()
+            
+            # Make sure the bytes to decode are in the message
+            # Last byte in message is 255, so decrement by one
+            if(last_byte < (len(message) - 1)):
+                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                if(sheet == 1):
+                    self.sheet1.set_cell_data(row, col, val)
+                else:
+                    self.sheet2.set_cell_data(row, col, val)
+                    
+                self.sheet1.refresh()
+                self.sheet2.refresh()   
+            
         
     def setVac(self, message):
         if(self.checkSum(message) == False):
@@ -199,14 +205,18 @@ class demo(tk.Tk):
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-            if(sheet == 1):
-                self.sheet1.set_cell_data(row, col, val)
-            else:
-                self.sheet2.set_cell_data(row, col, val)
-        self.sheet1.refresh()
-        self.sheet2.refresh()
-        
+            
+            # Make sure the bytes to decode are in the message
+            # Last byte in message is 255, so decrement by one
+            if(last_byte < (len(message) - 1)):
+                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                if(sheet == 1):
+                    self.sheet1.set_cell_data(row, col, val)
+                else:
+                    self.sheet2.set_cell_data(row, col, val)
+                    
+                self.sheet1.refresh()
+                self.sheet2.refresh()           
     def setAMU(self, message):
         if(self.checkSum(message) == False):
             print('Error - AMU message checksum failure')
@@ -215,13 +225,18 @@ class demo(tk.Tk):
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-            if(sheet == 1):
-                self.sheet1.set_cell_data(row, col, val)
-            else:
-                self.sheet2.set_cell_data(row, col, val)
-        self.sheet1.refresh()    
-        self.sheet2.refresh()
+            
+                        # Make sure the bytes to decode are in the message
+            # Last byte in message is 255, so decrement by one
+            if(last_byte < (len(message) - 1)):
+                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                if(sheet == 1):
+                    self.sheet1.set_cell_data(row, col, val)
+                else:
+                    self.sheet2.set_cell_data(row, col, val)
+                    
+                self.sheet1.refresh()
+                self.sheet2.refresh()   
 
     def setBeam(self, message):
         if(self.checkSum(message) == False):
@@ -235,13 +250,18 @@ class demo(tk.Tk):
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
-            val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-            if(sheet == 1):
-                self.sheet1.set_cell_data(row, col, val)
-            else:
-                self.sheet2.set_cell_data(row, col, val)
-        self.sheet1.refresh()
-        self.sheet2.refresh()
+            
+            # Make sure the bytes to decode are in the message
+            # Last byte in message is 255, so decrement by one
+            if(last_byte < (len(message) - 1)):
+                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                if(sheet == 1):
+                    self.sheet1.set_cell_data(row, col, val)
+                else:
+                    self.sheet2.set_cell_data(row, col, val)
+                    
+                self.sheet1.refresh()
+                self.sheet2.refresh()   
         
     def setTime(self):
         # Send the current time to the arduino
@@ -290,7 +310,11 @@ class demo(tk.Tk):
         #      If byte 2 is greater than 127, then byte 2 = byte 2 * 2 - 128
         #      and byte 3 = byte 3 * 2
         # result = (K1/32768) * 4^(byte 1 - K2)*(32768 + 256 * byte 2 + byte 3)
-        if(msgBytes[0] == 0):
+        # Code was crashing for getting an empty message, need to find that root cause.
+        # Check for empty array in the meantime.
+        if(len(msgBytes) == 0):
+            return 0
+        elif(msgBytes[0] == 0):
             result = 0
         else:
             if (msgBytes[1] >= 128):

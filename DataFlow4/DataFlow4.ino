@@ -70,7 +70,7 @@ void writeToSD(String dataString) {
     // Serial.println(dataString);
   } else {
     // if the file isn't open, pop up an error:
-    Serial.println("error opening dataFlowLog3.txt");
+    Serial.println("error opening dataFlowLog4.txt");
   }
 }
 
@@ -554,15 +554,38 @@ void setup() {
   // put your setup code here, to run once
   //Setup the LED
   pinMode(13, OUTPUT);
-  digitalWrite(13, HIGH);           // Turn on the LED - just show we are doing something
+  digitalWrite(13, HIGH);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, LOW);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, HIGH);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, LOW);           // Blink the LED - just show we are doing something
+  delay(500);
 
   rows = 0;
 
   // Setup the serial ports
   setupSerial();
+  digitalWrite(13, HIGH);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, LOW);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, HIGH);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, LOW);           // Blink the LED - just show we are doing something
+  delay(500);
   
   // Setup the SD card
   setupSD();
+  digitalWrite(13, HIGH);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, LOW);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, HIGH);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, LOW);           // Blink the LED - just show we are doing something
+  delay(500);
 
   // Setup real time clock
   // setSyncProvider(requestSync);   // set function to call when sync required
@@ -571,6 +594,14 @@ void setup() {
   
   // Initialize the buffers
   setupBuffers();
+  digitalWrite(13, HIGH);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, LOW);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, HIGH);           // Blink the LED - just show we are doing something
+  delay(500);
+  digitalWrite(13, LOW);           // Blink the LED - just show we are doing something
+  delay(500);
 
   // Setup and test LEDS
   setupLEDs();
@@ -632,7 +663,7 @@ const long interval = 1000;
    currentMillis = millis();
    if ((currentMillis - previousMillis) > interval) {
     // save the last time you blinked the LED
-    Serial.println("Heartbeat");
+    // Serial.println("Heartbeat");
     previousMillis = currentMillis;
 
     // if the LED is off turn it on and vice-versa:
