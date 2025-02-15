@@ -186,12 +186,13 @@ void setupSerial() {
   // long config = SERIAL_8E1;
   long config = SERIAL_8E1_RXINV_TXINV;
 
-  Serial.begin(9600);              // USB port
+  // Serial.begin(9600);              // USB port
+  Serial.begin(115200);              // Trying a faster speed to see if I get more messages. USB port
 
   //Wait for the serial port to initialize
-  while(!Serial) {
-    ;
-  }
+  // while(!Serial) {
+  //   ;
+  // }
   Serial.println("Program starting...");
   Serial1.begin(speed, config);   // Serial 1 port
   Serial2.begin(speed, config);   // Serial 2 port
@@ -234,7 +235,7 @@ void setupSD() {
   Serial.println("card initialized.");
 
   // Greetings Message
-  writeToSD("Program starting - DataFlow 3");
+  writeToSD("Program starting - DataFlow 4 - Speed 115200");
 
   // Write out file header
   // Right now the format will be the time (millis), followed by the channel (1 and 2, 3 and 4, or 5 and 6)
@@ -351,6 +352,7 @@ void handleSerial1() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
+        writeToSD("Channel 1 sent to python.");
       }
     }
   }  // End of channel 1
@@ -371,6 +373,7 @@ void handleSerial2() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
+        writeToSD("Channel 2 sent to python.");
       }
     }
   }  // End of channel 2
@@ -391,6 +394,7 @@ void handleSerial3() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
+        writeToSD("Channel 3 sent to python.");
       }
     }
   }  // End of channel 3  
@@ -411,6 +415,7 @@ void handleSerial4() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
+        writeToSD("Channel 4 sent to python.");
       }
     }
   }  // End of channel 4  
@@ -431,6 +436,7 @@ void handleSerial5() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
+        writeToSD("Channel 5 sent to python.");
       }
     }
   }  // End of channel 5  
@@ -451,6 +457,7 @@ void handleSerial6() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
+        writeToSD("Channel 6 sent to python.");
       }
     }
   }  // End of channel 6  
@@ -471,6 +478,7 @@ void handleSerial7() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
+        writeToSD("Channel 7 sent to python.");
       }
     }
   }  // End of channel 7  
@@ -491,6 +499,7 @@ void handleSerial8() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
+        writeToSD("Channel 8 sent to python.");
       }
     }
   }  // End of channel 8  

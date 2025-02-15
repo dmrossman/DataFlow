@@ -260,12 +260,17 @@ class fileDecoder():
     
 fd = fileDecoder()
 # fileName = 'C:/Users/DRossman/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
-fileName = 'C:/Users/dmros/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
-outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
+# fileName = 'C:/Users/dmros/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
+fileName = 'E:/dataFlowLog4-Sunday.txt'
+
+# outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
+outputFileName = 'E:/output.txt'
+
 f = open(fileName)
 fo = open(outputFileName, "w")
  
 # Get rid of the first line (column headers)
+line = f.readline()
 line = f.readline()
 
 # Loop through the first couple of lines and try and decode them...
