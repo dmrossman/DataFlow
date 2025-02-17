@@ -13,6 +13,10 @@
 //        sends the current time in the seconds from 1970 format.
 //    DataFlow 4 is changing from 3 by:
 //      * Rewriting the code to match some of the suggestions from https://forum.arduino.cc/t/serial-input-basics-updated/382007
+//
+// Feb 17, 2025 - Converting arrays from ints to bytes (uint8_t) - no change (none expected, I just didn't want to break anything)
+//              - Turning off the SD card writes - that seemed to help.  I am still getting some checksum failures on Beam, but 
+//                       collection rates seem correct (every second I get data from the channels)
 
 // constants won't change. Used here to set a pin number:
 const int ledPin = LED_BUILTIN;       // the number of the builtin LED pin (13)
@@ -21,6 +25,17 @@ const int led2PinAMU  = 37;           // the number of the LED pin for AMU
 const int led3PinBeam = 38;           // the number of the LED pin for Beam
 const int led4PinVac  = 39;           // the number of the LED pin for Vac
 const int led5PinES   = 13;           // the number of the LED pin for ES... whoops, this the same as the builtin.  Good thing ES doesn't work?  TBD: Fix in next rev
+
+// Increased sized buffers
+const int bufferSize = 256;
+uint8_t serial1Buffer[bufferSize];
+uint8_t serial2Buffer[bufferSize];
+uint8_t serial3Buffer[bufferSize];
+uint8_t serial4Buffer[bufferSize];
+uint8_t serial5Buffer[bufferSize];
+uint8_t serial6Buffer[bufferSize];
+uint8_t serial7Buffer[bufferSize];
+uint8_t serial8Buffer[bufferSize];
 
 // Timer variable for the hearbeat
 unsigned long previousMillis = 0;
@@ -40,14 +55,14 @@ unsigned char in_char, out_char;         // Do I need to trim the parity bit off
 int rows = 0;                            // Used while debugging to limit the number of rows that get printed to the serial monitor
 
 // Serial in buffer - capture things coming in from Serial in.  When you get all of the bytes, do something with it.
-char serialBuffer[255];
+uint8_t serialBuffer[255];
 int serialBufferIndex = 0;               // Where we are in the buffer
 
 // Location of the SD card
 const int chipSelect = BUILTIN_SDCARD;    // BUILTIN_SDCARD
 
 // Buffers to hold the information coming into each of the channels (UARTS)
-int chanBuffers[numberOfMessages][buffer_size];
+uint8_t chanBuffers[numberOfMessages][buffer_size];
 
 // Keep track of where we are in each of the buffers
 int chanIndex[numberOfMessages];
@@ -59,6 +74,10 @@ int chanBytesRemaining[numberOfMessages];
 bool chanInMessage[numberOfMessages];
 
 void writeToSD(String dataString) {
+  int i = 0;
+}
+
+void writeToSD_turnedOff(String dataString) {
   // open the file.
   File dataFile = SD.open("dataFlowLog4.txt", FILE_WRITE);
 
@@ -74,7 +93,7 @@ void writeToSD(String dataString) {
   }
 }
 
-int addCharToMessage(byte charReceived, int channel) {
+int addCharToMessage(uint8_t charReceived, int channel) {
 // This handles taking a new character and adding to to the message
 // If we aren't in a message yet (inMessage is false), then wait for three 22's to arrive
 // this will be followed by the channel number and then the number of bytes left in the 
@@ -138,7 +157,7 @@ int addCharToMessage(byte charReceived, int channel) {
   return(0);
 }
 
-String buildChannelSDoutput(int channel, int* channel_buffer, int msgLength) {
+String buildChannelSDoutput(int channel, uint8_t* channel_buffer, int msgLength) {
   String dataString = String(millis());
   dataString += "\tChan";
   dataString += String(channel);
@@ -154,7 +173,7 @@ String buildChannelSDoutput(int channel, int* channel_buffer, int msgLength) {
   return(dataString);
 }
 
-void writeToSerial_debugging(int channel, int* channel_buffer, int msgLength) {
+void writeToSerial_debugging(int channel, uint8_t* channel_buffer, int msgLength) {
     if(rows < 100) {
       Serial.print(millis());
       Serial.print(" - Ch - ");
@@ -173,9 +192,9 @@ void writeToSerial_debugging(int channel, int* channel_buffer, int msgLength) {
     }
 }
 
-void writeToSerial(int channel, int* channel_buffer, int msgLength) {
+void writeToSerial(int channel, uint8_t* channel_buffer, int msgLength) {
   for(int i = 0; i < msgLength; i++) {
-    Serial.write(char(channel_buffer[i]));
+    Serial.write(channel_buffer[i]);
   }
 }
 
@@ -186,10 +205,10 @@ void setupSerial() {
   // long config = SERIAL_8E1;
   long config = SERIAL_8E1_RXINV_TXINV;
 
-  // Serial.begin(9600);              // USB port
-  Serial.begin(115200);              // Trying a faster speed to see if I get more messages. USB port
-
+  Serial.begin(9600);              // USB port - I tried a faster speed, 155200, it didn't help
+  
   //Wait for the serial port to initialize
+  // If you put this code in, the arduino will freeze here on startup if there is no computer connected
   // while(!Serial) {
   //   ;
   // }
@@ -202,6 +221,16 @@ void setupSerial() {
   Serial6.begin(speed, config);   // Serial 6 port
   Serial7.begin(speed, config);   // Serial 7 port
   Serial8.begin(speed, config);   // Serial 8 port
+
+  // Increasing the size of the buffers for each of the serial ports.
+  Serial1.addMemoryForRead(&serial1Buffer, sizeof(serial1Buffer));
+  Serial2.addMemoryForRead(&serial2Buffer, sizeof(serial2Buffer));
+  Serial3.addMemoryForRead(&serial3Buffer, sizeof(serial3Buffer));
+  Serial4.addMemoryForRead(&serial4Buffer, sizeof(serial4Buffer));
+  Serial5.addMemoryForRead(&serial5Buffer, sizeof(serial5Buffer));
+  Serial6.addMemoryForRead(&serial6Buffer, sizeof(serial6Buffer));
+  Serial7.addMemoryForRead(&serial7Buffer, sizeof(serial7Buffer));
+  Serial8.addMemoryForRead(&serial8Buffer, sizeof(serial8Buffer));
 
   // Just out of curiousity, what do the RX pins read with no connection vs with a connection?
   Serial.print("RX1 : ");
@@ -235,12 +264,12 @@ void setupSD() {
   Serial.println("card initialized.");
 
   // Greetings Message
-  writeToSD("Program starting - DataFlow 4 - Speed 115200");
+  writeToSD("Program starting - DataFlow 4 - uint8_t data type");
 
   // Write out file header
   // Right now the format will be the time (millis), followed by the channel (1 and 2, 3 and 4, or 5 and 6)
   // and a set of bytes for the first channel and a set for the second channel 
-  String dataString = "Millis\tChannel\t"; 
+  String dataString = "Millis\tChannel\tMsgLen\tLen\t"; 
   for(int i = 0; i < buffer_size; i++) {
     dataString += "Byte ";
     dataString += String(i);

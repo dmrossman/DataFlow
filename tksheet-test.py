@@ -173,7 +173,10 @@ class demo(tk.Tk):
         
         
     def closeSerial(self):
-        self.serialHandler.stopThread()
+        try:
+            self.serialHandler.stopThread()
+        except:
+            pass
         self.serialHandler.closeSerialPort()
     
     def setDose(self, message):
@@ -193,8 +196,8 @@ class demo(tk.Tk):
             else:
                 self.sheet2.set_cell_data(row, col, val)
                 
-            self.sheet1.refresh()
-            self.sheet2.refresh()   
+        self.sheet1.refresh()
+        self.sheet2.refresh()   
             
         
     def setVac(self, message):
@@ -214,8 +217,8 @@ class demo(tk.Tk):
             else:
                 self.sheet2.set_cell_data(row, col, val)
                 
-            self.sheet1.refresh()
-            self.sheet2.refresh()           
+        self.sheet1.refresh()
+        self.sheet2.refresh()           
 
     def setAMU(self, message):
         if(self.checkSum(message) == False):
@@ -234,8 +237,8 @@ class demo(tk.Tk):
             else:
                 self.sheet2.set_cell_data(row, col, val)
                 
-            self.sheet1.refresh()
-            self.sheet2.refresh()   
+        self.sheet1.refresh()
+        self.sheet2.refresh()   
 
     def setBeam(self, message):
         if(self.checkSum(message) == False):
@@ -258,8 +261,8 @@ class demo(tk.Tk):
             else:
                 self.sheet2.set_cell_data(row, col, val)
                 
-            self.sheet1.refresh()
-            self.sheet2.refresh()   
+        self.sheet1.refresh()
+        self.sheet2.refresh()   
         
     def setTime(self):
         # Send the current time to the arduino

@@ -94,9 +94,9 @@ class SerialHandler:
     
         try:
             while (self.runThread):
-                while (self.runThread) and (self.computer.in_waiting > 0):
+                while (self.computer.in_waiting > 0):
                     value = self.computer.read()
-                    print('{}, '.format(value), end='')
+                    # print('{}, '.format(value), end='')
                     
                     # Are we in sync (in a message)
                     if inSync:

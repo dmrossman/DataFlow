@@ -11,10 +11,12 @@ from pySerialTransfer import pySerialTransfer as txfer
 
 if __name__ == '__main__':
     try:
-        link = txfer.SerialTransfer('COM11')
+        link = txfer.SerialTransfer('COM6')
         
         link.open()
         time.sleep(2) # allow some time for the Arduino to completely reset
+        
+        arrData = ''
         
         while True:
             send_size = 0
@@ -40,15 +42,15 @@ if __name__ == '__main__':
             # float_size = link.tx_obj(float_, send_size) - send_size
             # send_size += float_size
             
-            int_ = 13
-            int_size = link.tx_obj(int_)
-            send_size += int_size
+            # int_ = 13
+            # int_size = link.tx_obj(int_)
+            # send_size += int_size
             # print('Send size:')
             # print(send_size)
             ###################################################################
             # Transmit all the data to send in a single packet
             ###################################################################
-            link.send(send_size, 27)
+            # link.send(send_size, 27) 
             
             ##################################################### ##############
             # Wait for a response and report any errors while receiving packets
@@ -65,7 +67,8 @@ if __name__ == '__main__':
                     else:
                         print('ERROR: {}'.format(link.status.name))
             
-            rec_int_ = link.rx_obj(obj_type=type(int_), obj_byte_size=int_size)
+            arrData = link.rx_obj(obj_type=str, start_pos=0, obj_byte_size=1)
+            print(arrData)
             
             ###################################################################
             # Parse response list
@@ -94,9 +97,9 @@ if __name__ == '__main__':
             # print('SENT: {} {} {}'.format(list_, str_, float_))
             # print('RCVD: {} {} {}'.format(rec_list_, rec_str_, rec_float_))
             # print(' ')
-            print('SENT: {}'.format(int_))
-            print('RCVD: {}'.format(rec_int_))
-            print(' ')
+            # print('SENT: {}'.format(int_))
+            # print('RCVD: {}'.format(rec_int_))
+            # print(' ')
     
     except KeyboardInterrupt:
         try:
