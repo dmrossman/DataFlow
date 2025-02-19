@@ -396,7 +396,6 @@ void handleSerial1() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 1 sent to python.\n");
       }
       else {
         // If the message is less than 8, this is a short message asking for data.
@@ -422,7 +421,6 @@ void handleSerial2() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 2 sent to python.\n");
       }
       else {
         // If the message is less than 8, this is a short message asking for data.
@@ -448,7 +446,6 @@ void handleSerial3() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 3 sent to python.\n");
       }
       else {
         // If the message is less than 8, this is a short message asking for data.
@@ -474,7 +471,6 @@ void handleSerial4() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 4 sent to python.\n");
       }
       else {
         // If the message is less than 8, this is a short message asking for data.
@@ -500,7 +496,6 @@ void handleSerial5() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 5 sent to python.\n");
       }
       else {
         // If the message is less than 8, this is a short message asking for data.
@@ -526,7 +521,6 @@ void handleSerial6() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 6 sent to python.\n");
       }
       else {
         // If the message is less than 8, this is a short message asking for data.
@@ -552,7 +546,6 @@ void handleSerial7() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 7 sent to python.\n");
       }
       else {
         // If the message is less than 8, this is a short message asking for data.
@@ -578,7 +571,6 @@ void handleSerial8() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 8 sent to python.\n");
       }
       else {
         // If the message is less than 8, this is a short message asking for data.

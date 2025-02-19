@@ -295,7 +295,7 @@ class demo(tk.Tk):
         
         # Make sure result is not negative
         while(result < 0):
-            result += 255
+            result += 256
             
         # If the checksum result matches the checksum in the message, return true
         if(result == message[len(message) - 2]):
