@@ -17,6 +17,8 @@
 // Feb 17, 2025 - Converting arrays from ints to bytes (uint8_t) - no change (none expected, I just didn't want to break anything)
 //              - Turning off the SD card writes - that seemed to help.  I am still getting some checksum failures on Beam, but 
 //                       collection rates seem correct (every second I get data from the channels)
+// Feb 18, 2025 - Increasing the size of the read buffers for each of the serial ports to 256 bytes (longer than the longest message),
+//                       and writing to the SD card only once a second.
 
 // constants won't change. Used here to set a pin number:
 const int ledPin = LED_BUILTIN;       // the number of the builtin LED pin (13)
@@ -60,6 +62,8 @@ int serialBufferIndex = 0;               // Where we are in the buffer
 
 // Location of the SD card
 const int chipSelect = BUILTIN_SDCARD;    // BUILTIN_SDCARD
+String SDdataString;
+unsigned long SDcardDelay;
 
 // Buffers to hold the information coming into each of the channels (UARTS)
 uint8_t chanBuffers[numberOfMessages][buffer_size];
@@ -74,16 +78,22 @@ int chanBytesRemaining[numberOfMessages];
 bool chanInMessage[numberOfMessages];
 
 void writeToSD(String dataString) {
-  int i = 0;
+  // When I write to the SD card multiple times, I seem to be losing serial
+  // messages.  The delay with writing to the SD card seems to be a function
+  // of how many times I write, not the size of the data that I write.  The
+  // plan is to create a concatenated string, and then dump it out when 
+  // there is no serial communication.  For now, just build  up the 
+  // string.
+  SDdataString += dataString;
 }
 
-void writeToSD_turnedOff(String dataString) {
+void writeToSD_delayed() {
   // open the file.
   File dataFile = SD.open("dataFlowLog4.txt", FILE_WRITE);
 
   // if the file is available, write to it:
   if (dataFile) {
-    dataFile.println(dataString);
+    dataFile.println(SDdataString);
     dataFile.close();
     // print to the serial port too:
     // Serial.println(dataString);
@@ -91,6 +101,9 @@ void writeToSD_turnedOff(String dataString) {
     // if the file isn't open, pop up an error:
     Serial.println("error opening dataFlowLog4.txt");
   }
+
+  // Clear out the data string
+  SDdataString = "";
 }
 
 int addCharToMessage(uint8_t charReceived, int channel) {
@@ -169,6 +182,7 @@ String buildChannelSDoutput(int channel, uint8_t* channel_buffer, int msgLength)
     dataString += String(channel_buffer[i]);
     dataString += "\t";
   }
+  dataString += "\n";
 
   return(dataString);
 }
@@ -264,7 +278,7 @@ void setupSD() {
   Serial.println("card initialized.");
 
   // Greetings Message
-  writeToSD("Program starting - DataFlow 4 - uint8_t data type");
+  writeToSD("Program starting - DataFlow 4 - uint8_t data type, longer buffers, delayed SD card, extra line feed\n");
 
   // Write out file header
   // Right now the format will be the time (millis), followed by the channel (1 and 2, 3 and 4, or 5 and 6)
@@ -275,6 +289,7 @@ void setupSD() {
     dataString += String(i);
     dataString += "\t";
   }
+  dataString += "\n";
   writeToSD(dataString);
 }
 
@@ -311,7 +326,7 @@ void requestSync() {
     Serial.write(message[i]);
   }
   
-  writeToSD("Request sent for time sync.");
+  writeToSD("Request sent for time sync.\n");
 }
 
 /*  code to process time sync messages from the serial port   */
@@ -358,7 +373,7 @@ unsigned long pcTime;
         if(retries > maxRetries) {
           // Error - we didn't get a valid response
           done = true;
-          writeToSD("Failed to get a response to set RTC.");
+          writeToSD("Failed to get a response to set RTC.\n");
         }
       } 
     }
@@ -381,7 +396,12 @@ void handleSerial1() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 1 sent to python.");
+        writeToSD("Channel 1 sent to python.\n");
+      }
+      else {
+        // If the message is less than 8, this is a short message asking for data.
+        // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
+        SDcardDelay = millis();
       }
     }
   }  // End of channel 1
@@ -402,7 +422,12 @@ void handleSerial2() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 2 sent to python.");
+        writeToSD("Channel 2 sent to python.\n");
+      }
+      else {
+        // If the message is less than 8, this is a short message asking for data.
+        // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
+        SDcardDelay = millis();
       }
     }
   }  // End of channel 2
@@ -423,7 +448,12 @@ void handleSerial3() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 3 sent to python.");
+        writeToSD("Channel 3 sent to python.\n");
+      }
+      else {
+        // If the message is less than 8, this is a short message asking for data.
+        // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
+        SDcardDelay = millis();
       }
     }
   }  // End of channel 3  
@@ -444,7 +474,12 @@ void handleSerial4() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 4 sent to python.");
+        writeToSD("Channel 4 sent to python.\n");
+      }
+      else {
+        // If the message is less than 8, this is a short message asking for data.
+        // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
+        SDcardDelay = millis();
       }
     }
   }  // End of channel 4  
@@ -465,7 +500,12 @@ void handleSerial5() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 5 sent to python.");
+        writeToSD("Channel 5 sent to python.\n");
+      }
+      else {
+        // If the message is less than 8, this is a short message asking for data.
+        // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
+        SDcardDelay = millis();
       }
     }
   }  // End of channel 5  
@@ -486,7 +526,12 @@ void handleSerial6() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 6 sent to python.");
+        writeToSD("Channel 6 sent to python.\n");
+      }
+      else {
+        // If the message is less than 8, this is a short message asking for data.
+        // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
+        SDcardDelay = millis();
       }
     }
   }  // End of channel 6  
@@ -507,7 +552,12 @@ void handleSerial7() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 7 sent to python.");
+        writeToSD("Channel 7 sent to python.\n");
+      }
+      else {
+        // If the message is less than 8, this is a short message asking for data.
+        // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
+        SDcardDelay = millis();
       }
     }
   }  // End of channel 7  
@@ -528,7 +578,12 @@ void handleSerial8() {
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
-        writeToSD("Channel 8 sent to python.");
+        writeToSD("Channel 8 sent to python.\n");
+      }
+      else {
+        // If the message is less than 8, this is a short message asking for data.
+        // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
+        SDcardDelay = millis();
       }
     }
   }  // End of channel 8  
@@ -696,6 +751,15 @@ const long interval = 1000;
    handleSerial6();
    handleSerial7();
    handleSerial8();
+
+   // Write out the data to the SD card.  Only do this when there should be 
+   // no serial data (about 500 msec after the request for data messages are
+   // sent).
+   currentMillis = millis();
+   if ((currentMillis - SDcardDelay) > 500) {
+      writeToSD_delayed();
+   }
+    
 
    // Hearbeat - just so I know the code is running
    currentMillis = millis();
