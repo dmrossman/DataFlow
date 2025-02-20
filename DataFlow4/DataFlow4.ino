@@ -19,6 +19,7 @@
 //                       collection rates seem correct (every second I get data from the channels)
 // Feb 18, 2025 - Increasing the size of the read buffers for each of the serial ports to 256 bytes (longer than the longest message),
 //                       and writing to the SD card only once a second.
+// Feb 19, 2025 - Trying to fix empty space in my files by resetting the time delay after writing to the SD card
 
 // constants won't change. Used here to set a pin number:
 const int ledPin = LED_BUILTIN;       // the number of the builtin LED pin (13)
@@ -91,15 +92,20 @@ void writeToSD_delayed() {
   // open the file.
   File dataFile = SD.open("dataFlowLog4.txt", FILE_WRITE);
 
-  // if the file is available, write to it:
-  if (dataFile) {
-    dataFile.println(SDdataString);
-    dataFile.close();
-    // print to the serial port too:
-    // Serial.println(dataString);
-  } else {
-    // if the file isn't open, pop up an error:
-    Serial.println("error opening dataFlowLog4.txt");
+  // For some reason I am getting a lot of empty lines (CR/LF).  Only write out data
+  // if the data string is not empty.
+  if(SDdataString.length() > 2) {
+
+    // if the file is available, write to it:
+    if (dataFile) {
+      dataFile.println(SDdataString);
+      dataFile.close();
+      // print to the serial port too:
+      // Serial.println(dataString);
+    } else {
+      // if the file isn't open, pop up an error:
+      Serial.println("error opening dataFlowLog4.txt");
+    }
   }
 
   // Clear out the data string
@@ -278,7 +284,7 @@ void setupSD() {
   Serial.println("card initialized.");
 
   // Greetings Message
-  writeToSD("Program starting - DataFlow 4 - uint8_t data type, longer buffers, delayed SD card, extra line feed\n");
+  writeToSD("Program starting - DataFlow 4 - uint8_t data type, longer buffers, delayed SD card, extra line feed, remove extra lines\n");
 
   // Write out file header
   // Right now the format will be the time (millis), followed by the channel (1 and 2, 3 and 4, or 5 and 6)
@@ -749,6 +755,11 @@ const long interval = 1000;
    // sent).
    currentMillis = millis();
    if ((currentMillis - SDcardDelay) > 500) {
+      // Set the SDcardDelay to a "big" number so this won't be called again
+      // until we get the next round of requests.
+      SDcardDelay = currentMillis + 1000;
+
+      // Now write out the data to the SD card
       writeToSD_delayed();
    }
     

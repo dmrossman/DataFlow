@@ -278,10 +278,11 @@ while(line):
 
     line = f.readline()
     lineData = line.split()
-    
-    # Skip messages with length = 8
-    #if(lineData[3] != '8'):
-    fd.decodeMessage(lineData[4:])
-    
+    if(len(lineData) > 0):
+        # Skip messages with length = 8
+        #if(lineData[3] != '8'):
+        fo.write(f"{lineData[0]}\t")
+        fd.decodeMessage(lineData[4:])
+        
 f.close()
 fo.close()
