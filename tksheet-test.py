@@ -125,10 +125,14 @@ class demo(tk.Tk):
         ports = self.serialHandler.serial_ports()
         print('Number of serial ports is:')
         print(len(ports))
-        # self.serialHandler.openSerialPort("COM3", 9600, self.serialCallback)
-        self.serialHandler.openSerialPort("COM3", 115200, self.serialCallback)
+        self.serialHandler.openSerialPort("COM3", 9600, self.serialCallback)
         self.serialHandler.startThread()
-            
+        
+        # Open a file to write out all of the data that is received.
+        # Hopefully this will match the data that is being stored on the Arduino.
+        outputFileName = "C:/Users/dmros/OneDrive/Documents/GitHub/DataFlow/tksheet-test-log.txt"
+        self.fo = open(outputFileName, "w")
+        
     def changeData(self):
         print('Change data')
         # print(self.sheet1.get_cell_data(0, 1))
@@ -144,6 +148,10 @@ class demo(tk.Tk):
     def serialCallback(self, message):
         # Decode the message coming from the arduino.  
         # print(message)
+        
+        # Write out the message to the log file
+        currTime = round(time.time(),2)
+        self.fo.write(f"{currTime}\t{message}\n")
         
         # First convert the message from bytes to ints - just easier to deal with
         intMessage = []
@@ -348,6 +356,7 @@ class demo(tk.Tk):
         print("Closing")
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.closeSerial()
+            self.fo.close()
             self.destroy()
 
         
