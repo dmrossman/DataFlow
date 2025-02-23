@@ -285,7 +285,7 @@ class demo(tk.Tk):
         # The message format is 22 22 22 <channel id>  <number of remaining columns> .... <checksum> 255
         # The checksum is calculated by summing all of the columns after the channel id up to the 
         # checksum.  First we take the mod of the sum with 255.  Then we subtract the floor of the sum
-        # divided by 255.  If the result is negative, we add 255 until it is not negative.
+        # divided by 255.  If the result is negative, we add 256 until it is not negative.
         
         # First get the sum
         sum_of_bytes = 0

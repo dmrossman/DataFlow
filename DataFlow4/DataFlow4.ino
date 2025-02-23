@@ -767,6 +767,16 @@ const long interval = 1000;
    // Hearbeat - just so I know the code is running
    currentMillis = millis();
    if ((currentMillis - previousMillis) > interval) {
+    // I had an issue this week when the computer and python script couldn't
+    // connect to the arduino (no valid com port).  I had to boot the arduino 
+    // to get it to come back.  This would suck if this happened occassionally 
+    // when monitoring implants.  Check to see if the serial port is not available,
+    // and then reset it.
+    if(!Serial) {
+      Serial.end();
+      Serial.begin(9600);
+    }
+    
     // save the last time you blinked the LED
     // Serial.println("Heartbeat");
     previousMillis = currentMillis;
