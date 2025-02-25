@@ -262,9 +262,9 @@ fd = fileDecoder()
 # fileName = 'C:/Users/DRossman/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
 # fileName = 'C:/Users/dmros/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
 # fileName = 'C:/Users/DRossman/OneDrive - Coherent Corporation/Desktop/dataFlowLog4.txt'
-fileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry2d.txt'
+# fileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry2d.txt'
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
-outputFileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry-outputd.txt'
+# outputFileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry-outputd.txt'
 fileName = 'E:/dataFlowLog4-Sunday.txt'
 
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
@@ -286,14 +286,12 @@ while(line):
 
     line = f.readline()
     lineData = line.split()
-<<<<<<< HEAD
     print(lineData[:10])
     if(len(lineData) > 0):
         # Skip messages with length = 8
         #if(lineData[3] != '8'):
         fo.write(f"{lineData[0]}\t")
         fd.decodeMessage(lineData[4:])
-    
-        
+
 f.close()
 fo.close()
