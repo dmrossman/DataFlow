@@ -254,23 +254,32 @@ class fileDecoder():
     
 fd = fileDecoder()
 # fileName = 'C:/Users/DRossman/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
-fileName = 'C:/Users/dmros/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
-outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
+# fileName = 'C:/Users/dmros/Downloads/DataFlow-main/DataFlow-main/dataFlowLog3-12-13-24.txt'
+# fileName = 'C:/Users/DRossman/OneDrive - Coherent Corporation/Desktop/dataFlowLog4.txt'
+fileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry2d.txt'
+# outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
+outputFileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry-outputd.txt'
 f = open(fileName)
 fo = open(outputFileName, "w")
+
+# Get rid of the "Program starting line"
+line = f.readline()
  
 # Get rid of the first line (column headers)
 line = f.readline()
+
 
 # Loop through the first couple of lines and try and decode them...
 while(line):
 
     line = f.readline()
     lineData = line.split()
-    
-    # Skip messages with length = 8
-    #if(lineData[3] != '8'):
-    fd.decodeMessage(lineData[4:])
+    print(lineData[:10])
+    if(len(lineData) > 0):
+        # Skip messages with length = 8
+        #if(lineData[3] != '8'):
+        fo.write(f"{lineData[0]}\t")
+        fd.decodeMessage(lineData[4:])
     
 f.close()
 fo.close()
