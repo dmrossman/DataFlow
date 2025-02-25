@@ -115,7 +115,8 @@ class fileDecoder():
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
             # Make sure the bytes to decode are in the message
-            if(last_byte < len(message)):
+            # Last byte in message is 255, so decrement by one
+            if(last_byte < (len(message) - 1)):
                 val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
                 fo.write(f"{val}\t")
         fo.write('\n')
@@ -131,7 +132,8 @@ class fileDecoder():
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
             # Make sure the bytes to decode are in the message
-            if(last_byte < len(message)):
+            # Last byte in message is 255, so decrement by one
+            if(last_byte < (len(message) - 1)):
                 val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
                 fo.write(f"{val}\t")
         fo.write('\n')
@@ -146,7 +148,8 @@ class fileDecoder():
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
             # Make sure the bytes to decode are in the message
-            if(last_byte < len(message)):
+            # Last byte in message is 255, so decrement by one
+            if(last_byte < (len(message) - 1)):
                 val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
                 fo.write(f"{val}\t")
         fo.write('\n')
@@ -161,7 +164,8 @@ class fileDecoder():
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
             # Make sure the bytes to decode are in the message
-            if(last_byte < len(message)):
+            # Last byte in message is 255, so decrement by one
+            if(last_byte < (len(message) - 1)):
                 val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
                 fo.write(f"{val}\t")
         fo.write('\n')
@@ -224,7 +228,9 @@ class fileDecoder():
         #      If byte 2 is greater than 127, then byte 2 = byte 2 * 2 - 128
         #      and byte 3 = byte 3 * 2
         # result = (K1/32768) * 4^(byte 1 - K2)*(32768 + 256 * byte 2 + byte 3)
-        if(msgBytes[0] == 0):
+        if(len(msgBytes) == 0):
+            result = 0
+        elif(msgBytes[0] == 0):
             result = 0
         else:
             if (msgBytes[1] >= 128):
@@ -259,6 +265,11 @@ fd = fileDecoder()
 fileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry2d.txt'
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 outputFileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry-outputd.txt'
+fileName = 'E:/dataFlowLog4-Sunday.txt'
+
+# outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
+outputFileName = 'E:/output.txt'
+
 f = open(fileName)
 fo = open(outputFileName, "w")
 
@@ -267,6 +278,7 @@ line = f.readline()
  
 # Get rid of the first line (column headers)
 line = f.readline()
+line = f.readline()
 
 
 # Loop through the first couple of lines and try and decode them...
@@ -274,6 +286,7 @@ while(line):
 
     line = f.readline()
     lineData = line.split()
+<<<<<<< HEAD
     print(lineData[:10])
     if(len(lineData) > 0):
         # Skip messages with length = 8
@@ -281,5 +294,6 @@ while(line):
         fo.write(f"{lineData[0]}\t")
         fd.decodeMessage(lineData[4:])
     
+        
 f.close()
 fo.close()

@@ -96,7 +96,7 @@ class SerialHandler:
             while (self.runThread):
                 while (self.computer.in_waiting > 0):
                     value = self.computer.read()
-                    # print(value)
+                    # print('{}, '.format(value), end='')
                     
                     # Are we in sync (in a message)
                     if inSync:
@@ -127,11 +127,14 @@ class SerialHandler:
                     else:
                         # We get in sync if we find the value 22 three times followed by a valid
                         # channel (1, 2, 4, 5)
-                        if (messageIndex == 0) and (value == b'\x16'):
-                            # print('got 1')
-                            message.clear()
-                            message.append(value)
-                            messageIndex = 1
+                        if (messageIndex == 0):
+                            if (value == b'\x16'):
+                                # print('got 1')
+                                message.clear()
+                                message.append(value)
+                                messageIndex = 1
+                            else:
+                                print('Sync error: index 0')
                         elif (messageIndex == 1):
                             if (value == b'\x16'):
                                 # print('got 2')
@@ -172,7 +175,7 @@ class SerialHandler:
                         else:
                             # This is an invalid character
                             # Just throw the value away
-                            # print(f"Not in sync - message index = {messageIndex}")
+                            print(f"Not in sync - message index = {messageIndex}")
                             messageIndex = 0
         finally:
             self.computer.close()

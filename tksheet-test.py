@@ -127,7 +127,12 @@ class demo(tk.Tk):
         print(len(ports))
         self.serialHandler.openSerialPort("COM3", 9600, self.serialCallback)
         self.serialHandler.startThread()
-            
+        
+        # Open a file to write out all of the data that is received.
+        # Hopefully this will match the data that is being stored on the Arduino.
+        outputFileName = "C:/Users/dmros/OneDrive/Documents/GitHub/DataFlow/tksheet-test-log.txt"
+        self.fo = open(outputFileName, "w")
+        
     def changeData(self):
         print('Change data')
         # print(self.sheet1.get_cell_data(0, 1))
@@ -143,6 +148,10 @@ class demo(tk.Tk):
     def serialCallback(self, message):
         # Decode the message coming from the arduino.  
         # print(message)
+        
+        # Write out the message to the log file
+        currTime = round(time.time(),2)
+        self.fo.write(f"{currTime}\t{message}\n")
         
         # First convert the message from bytes to ints - just easier to deal with
         intMessage = []
@@ -172,7 +181,10 @@ class demo(tk.Tk):
         
         
     def closeSerial(self):
-        self.serialHandler.stopThread()
+        try:
+            self.serialHandler.stopThread()
+        except:
+            pass
         self.serialHandler.closeSerialPort()
     
     def setDose(self, message):
@@ -183,13 +195,18 @@ class demo(tk.Tk):
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
+            
+            # Make sure the bytes to decode are in the message
+            # Last byte in message is 255, so decrement by one
             val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
             if(sheet == 1):
                 self.sheet1.set_cell_data(row, col, val)
             else:
                 self.sheet2.set_cell_data(row, col, val)
+                
         self.sheet1.refresh()
-        self.sheet2.refresh()
+        self.sheet2.refresh()   
+            
         
     def setVac(self, message):
         if(self.checkSum(message) == False):
@@ -199,14 +216,18 @@ class demo(tk.Tk):
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
+            
+            # Make sure the bytes to decode are in the message
+            # Last byte in message is 255, so decrement by one
             val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
             if(sheet == 1):
                 self.sheet1.set_cell_data(row, col, val)
             else:
                 self.sheet2.set_cell_data(row, col, val)
+                
         self.sheet1.refresh()
-        self.sheet2.refresh()
-        
+        self.sheet2.refresh()           
+
     def setAMU(self, message):
         if(self.checkSum(message) == False):
             print('Error - AMU message checksum failure')
@@ -215,13 +236,17 @@ class demo(tk.Tk):
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
+            
+            # Make sure the bytes to decode are in the message
+            # Last byte in message is 255, so decrement by one
             val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
             if(sheet == 1):
                 self.sheet1.set_cell_data(row, col, val)
             else:
                 self.sheet2.set_cell_data(row, col, val)
-        self.sheet1.refresh()    
-        self.sheet2.refresh()
+                
+        self.sheet1.refresh()
+        self.sheet2.refresh()   
 
     def setBeam(self, message):
         if(self.checkSum(message) == False):
@@ -235,13 +260,17 @@ class demo(tk.Tk):
         for field in fields:
             # Calculate the value for the field
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
+            
+            # Make sure the bytes to decode are in the message
+            # Last byte in message is 255, so decrement by one
             val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
             if(sheet == 1):
                 self.sheet1.set_cell_data(row, col, val)
             else:
                 self.sheet2.set_cell_data(row, col, val)
+                
         self.sheet1.refresh()
-        self.sheet2.refresh()
+        self.sheet2.refresh()   
         
     def setTime(self):
         # Send the current time to the arduino
@@ -256,7 +285,7 @@ class demo(tk.Tk):
         # The message format is 22 22 22 <channel id>  <number of remaining columns> .... <checksum> 255
         # The checksum is calculated by summing all of the columns after the channel id up to the 
         # checksum.  First we take the mod of the sum with 255.  Then we subtract the floor of the sum
-        # divided by 255.  If the result is negative, we add 255 until it is not negative.
+        # divided by 255.  If the result is negative, we add 256 until it is not negative.
         
         # First get the sum
         sum_of_bytes = 0
@@ -274,7 +303,7 @@ class demo(tk.Tk):
         
         # Make sure result is not negative
         while(result < 0):
-            result += 255
+            result += 256
             
         # If the checksum result matches the checksum in the message, return true
         if(result == message[len(message) - 2]):
@@ -290,7 +319,12 @@ class demo(tk.Tk):
         #      If byte 2 is greater than 127, then byte 2 = byte 2 * 2 - 128
         #      and byte 3 = byte 3 * 2
         # result = (K1/32768) * 4^(byte 1 - K2)*(32768 + 256 * byte 2 + byte 3)
-        if(msgBytes[0] == 0):
+        # Code was crashing for getting an empty message, need to find that root cause.
+        # Check for empty array in the meantime.
+        if(len(msgBytes) == 0):
+            print("decodeValue : empty array error")
+            return 0
+        elif(msgBytes[0] == 0):
             result = 0
         else:
             if (msgBytes[1] >= 128):
@@ -322,6 +356,7 @@ class demo(tk.Tk):
         print("Closing")
         if messagebox.askokcancel("Quit", "Do you want to quit?"):
             self.closeSerial()
+            self.fo.close()
             self.destroy()
 
         
