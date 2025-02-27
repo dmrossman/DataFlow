@@ -1,0 +1,56 @@
+#Name_of_Engineer              
+#Implanter_ID                  
+#Species                       
+#Date_Created                  07/02/2004  18:34:51
+#Date_Last_Modified            02/14/2008  07:10:12
+Dose                           0.000e+000      0.000e+000     0     0 
+Beam_Energy                         0.000           0.000     0     0 
+AMU                                 0.000           0.000     0     0 
+Beam_Current                        0.000           0.000     0     0 
+Magnetic_Current                    0.000           0.000     0     0 
+Wafer_Size                              0               0     0     0 
+Preset_Scans                            0               0     0     0 
+Estimated_Time                      0.000           0.000     0     0 
+Actual_Time                         0.000           0.000     0     0 
+Pressure_Comp                       0.000           0.000     0     0 
+Trim                                0.960           0.960     0     0 
+Pressure_P3                    0.000e+000      0.000e+000     0     0 
+Pressure_P2                    0.000e+000      0.000e+000     0     0 
+Pressure_P1                    0.000e+000      0.000e+000     0     0 
+ES_Pressure_Start                    0.00           0.000     0     0 
+ES_Pressure_Stop               2.000e-004      2.000e-004     1     1 
+Src_Arc_Current                     0.000           0.000     0     0 
+Src_Arc_Voltage                     0.000           0.000     0     0 
+Source_Fil_Current                  0.000           0.000     0     0 
+Source_Fil_Voltage                  0.000           0.000     0     0 
+Extraction_Current                  0.000           0.000     0     0 
+Extraction_Voltage                  0.000           0.000     0     0 
+Source_Magnet_Current               0.000           0.000     0     0 
+Extraction_Suppr_Current            0.000           0.000     0     0 
+Extraction_Suppr_Voltage            0.000           0.000     0     0 
+Post_Accel_Suppr_Current            0.000           0.000     0     0 
+Post_Accel_Suppr_Voltage            0.000           0.000     0     0 
+Gas_Leak_Valve_1                        0               0     0     0 
+Gas_Leak_Valve_2                        0               0     0     0 
+Gas_Leak_Valve_3                        0               0     0     0 
+Gas_Leak_Valve_4                        0               0     0     0 
+Vaporizer_Oven_Temp                 0.000           0.000     0     0 
+Vaporizer_Heater_Temp               0.000           0.000     0     0 
+Extraction_Axis_1                       0               0     0     0 
+Extraction_Axis_2                       0               0     0     0 
+Extraction_Axis_3                       0               0     0     0 
+Elec_Shwr_Pri_Current               0.000           0.000     0     0 
+Elec_Shwr_Sec_Current               0.000           0.000     0     0 
+Elec_Shower_Aper_Voltage            0.000           0.000     0     0 
+Post_Accel_Axis_3                       0               0     0     0 
+Post_Accel_Current                  0.000           0.000     0     0 
+Interruptions                           0               0     0     0 
+ES4_%Beam_Current                   0.000           0.000     0     0 
+ES4_Implant_Gas_Flow                0.000           0.000     0     0 
+Electron_Shower_ON                      0               0     0     0 
+ES_Primary_Control_Mode                 0               0     0     0 
+Carrier_Gas_Support                     0               0     0     0 
+Axis_3_Detune                           0               0     0     0 
+Bias_Aperture_ON                        0               0     0     0 
+HI_Energy_Electrode                     0               0     0     0 
+Magnetic_Deflector_In                   0               0     0     0 
