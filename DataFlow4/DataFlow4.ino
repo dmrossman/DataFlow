@@ -243,6 +243,8 @@ void setupSerial() {
   Serial8.begin(speed, config);   // Serial 8 port
 
   // Increasing the size of the buffers for each of the serial ports.
+  // I did this to try and fix a partiy issue that was not real.  I don't
+  // think this helped, but it didn't hurt.  
   Serial1.addMemoryForRead(&serial1Buffer, sizeof(serial1Buffer));
   Serial2.addMemoryForRead(&serial2Buffer, sizeof(serial2Buffer));
   Serial3.addMemoryForRead(&serial3Buffer, sizeof(serial3Buffer));
@@ -388,7 +390,7 @@ unsigned long pcTime;
 
 void handleSerial1() {
   
-  if (Serial1.available()) {        // If anything comes in Serial1
+  if (Serial1.available()) {        // If anything comes in Serial1 - Beam from implanter
     
     char in_char = Serial1.read();
     int channel = 0;
@@ -408,12 +410,15 @@ void handleSerial1() {
         // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
         SDcardDelay = millis();
       }
+
+      // Turn on the Beam LED
+      digitalWrite(led3PinBeam, HIGH);
     }
   }  // End of channel 1
 }
 
 void handleSerial2() {
-  if (Serial2.available()) {        // If anything comes in Serial1
+  if (Serial2.available()) {        // If anything comes in Serial2 - Vac from implanter
     
     char in_char = Serial2.read();
     int channel = 1;
@@ -433,12 +438,15 @@ void handleSerial2() {
         // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
         SDcardDelay = millis();
       }
+
+      // Turn on the Vac LED
+      digitalWrite(led4PinVac, HIGH);
     }
   }  // End of channel 2
 }
 
 void handleSerial3() {
-  if (Serial3.available()) {        // If anything comes in Serial1
+  if (Serial3.available()) {        // If anything comes in Serial3 - Dose from Implanter
     
     char in_char = Serial3.read();
     int channel = 2;
@@ -458,12 +466,15 @@ void handleSerial3() {
         // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
         SDcardDelay = millis();
       }
+
+      // Turn on the Dose LED
+      digitalWrite(led1PinDose, HIGH);
     }
   }  // End of channel 3  
 }
 
 void handleSerial4() {
-  if (Serial4.available()) {        // If anything comes in Serial1
+  if (Serial4.available()) {        // If anything comes in Serial4 - AMU from Implanter
     
     char in_char = Serial4.read();
     int channel = 3;
@@ -483,12 +494,15 @@ void handleSerial4() {
         // Set the SDcardDelay and copy the data to the SDcard in 500 msec.
         SDcardDelay = millis();
       }
+
+      // Turn on the AMU LED
+      digitalWrite(led2PinAMU, HIGH);
     }
   }  // End of channel 4  
 }
 
 void handleSerial5() {
-  if (Serial5.available()) {        // If anything comes in Serial1
+  if (Serial5.available()) {        // If anything comes in Serial5 - Beam from DataFlow
     
     char in_char = Serial5.read();
     int channel = 4;
@@ -513,7 +527,7 @@ void handleSerial5() {
 }
 
 void handleSerial6() {
-  if (Serial6.available()) {        // If anything comes in Serial1
+  if (Serial6.available()) {        // If anything comes in Serial6 - Vac from DataFlow
     
     char in_char = Serial6.read();
     int channel = 5;
@@ -538,7 +552,7 @@ void handleSerial6() {
 }
 
 void handleSerial7() {
-  if (Serial7.available()) {        // If anything comes in Serial1
+  if (Serial7.available()) {        // If anything comes in Serial7 - Dose from DataFlow
     
     char in_char = Serial7.read();
     int channel = 6;
@@ -563,7 +577,7 @@ void handleSerial7() {
 }
 
 void handleSerial8() {
-  if (Serial8.available()) {        // If anything comes in Serial1
+  if (Serial8.available()) {        // If anything comes in Serial8 - AMU from DataFlow
     
     char in_char = Serial8.read();
     int channel = 7;
@@ -790,7 +804,12 @@ const long interval = 1000;
 
     // set the LED with the ledState of the variable:
     digitalWrite(13, ledState);
+
+    // Turn off the status LEDsdigitalWrite(led1PinDose, LOW);
+    digitalWrite(led1PinDose, LOW);
+    digitalWrite(led2PinAMU, LOW);
+    digitalWrite(led3PinBeam, LOW);
+    digitalWrite(led4PinVac, LOW);
   }
 
-  
 }
