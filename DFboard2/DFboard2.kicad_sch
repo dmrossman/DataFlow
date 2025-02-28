@@ -7159,7 +7159,7 @@
 	)
 	(text "Vac"
 		(exclude_from_sim no)
-		(at 138.938 48.26 0)
+		(at 138.176 67.818 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7209,7 +7209,7 @@
 	)
 	(text "AMU"
 		(exclude_from_sim no)
-		(at 138.938 78.74 0)
+		(at 137.668 38.354 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7249,7 +7249,7 @@
 	)
 	(text "Beam"
 		(exclude_from_sim no)
-		(at 138.938 38.1 0)
+		(at 138.43 78.232 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -7259,7 +7259,7 @@
 	)
 	(text "Dose"
 		(exclude_from_sim no)
-		(at 138.43 68.834 0)
+		(at 137.668 45.72 0)
 		(effects
 			(font
 				(size 1.27 1.27)

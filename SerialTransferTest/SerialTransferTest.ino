@@ -1,15 +1,12 @@
- #include "SerialTransfer.h"
-
+#include "SerialTransfer.h"
 
 SerialTransfer myTransfer;
-
 
 void setup()
 {
   Serial.begin(115200);
   myTransfer.begin(Serial);
 }
-
 
 void loop()
 {

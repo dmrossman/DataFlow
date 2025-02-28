@@ -20,6 +20,8 @@
 // Feb 18, 2025 - Increasing the size of the read buffers for each of the serial ports to 256 bytes (longer than the longest message),
 //                       and writing to the SD card only once a second.
 // Feb 19, 2025 - Trying to fix empty space in my files by resetting the time delay after writing to the SD card
+// Feb 25, 2025 - Fixing some minor typos and adding code to check for a dropped serial port
+// Feb 27, 2025 - Moving the serial ports around, adding in Serial (USB) and giving up on SerialTransfer code
 
 // constants won't change. Used here to set a pin number:
 const int ledPin = LED_BUILTIN;       // the number of the builtin LED pin (13)
@@ -51,20 +53,12 @@ int ledState = LOW;
 // This include is for keeping track of real time
 #include <TimeLib.h>
 
-const int numberOfMessages = 8;          // Let's try and get all of the messages between the controllers (AMU, Dose, Beam, Vac. Not Endstation for now - no more channels)
+const int numberOfMessages = 9;          // Let's try and get all of the messages between the controllers (AMU, Dose, Beam, Vac. Not Endstation for now - no more channels)
+                                         // I am rolling in the data from Serial (USB) into these buffers as well
 const int buffer_size = 255;             // Size of the data buffers.  I have no idea, so setting them big to start with
 unsigned char in_char, out_char;         // Do I need to trim the parity bit off like I did with earlier 7 bit data?
 
 int rows = 0;                            // Used while debugging to limit the number of rows that get printed to the serial monitor
-
-// Serial in buffer - capture things coming in from Serial in.  When you get all of the bytes, do something with it.
-uint8_t serialBuffer[255];
-int serialBufferIndex = 0;               // Where we are in the buffer
-
-// Location of the SD card
-const int chipSelect = BUILTIN_SDCARD;    // BUILTIN_SDCARD
-String SDdataString;
-unsigned long SDcardDelay;
 
 // Buffers to hold the information coming into each of the channels (UARTS)
 uint8_t chanBuffers[numberOfMessages][buffer_size];
@@ -77,6 +71,11 @@ int chanBytesRemaining[numberOfMessages];
 
 // Are we waiting for a message or are we in the message?
 bool chanInMessage[numberOfMessages];
+
+// Location of the SD card
+const int chipSelect = BUILTIN_SDCARD;    // BUILTIN_SDCARD
+String SDdataString;
+unsigned long SDcardDelay;
 
 void writeToSD(String dataString) {
   // When I write to the SD card multiple times, I seem to be losing serial
@@ -388,11 +387,11 @@ unsigned long pcTime;
   }
 }
 
-void handleSerial1() {
+void handleSerial() {
   
-  if (Serial1.available()) {        // If anything comes in Serial1 - Beam from implanter
+  if (Serial.available()) {        // If anything comes in Serial - USB from the computer
     
-    char in_char = Serial1.read();
+    char in_char = Serial.read();
     int channel = 0;
 
     // Add the character to the buffer and see if the buffer is complete
@@ -400,7 +399,62 @@ void handleSerial1() {
     if(msgLength > 0) {
       // The message is complete
       // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      writeToSD(buildChannelSDoutput(channel, chanBuffers[channel], msgLength));
+      
+      // Now we need to figure out what to do with the data.  Depending on the channel
+      // id in the message, send the message to the write location
+      int messageChannel = chanBuffers[channel][3];
+      if(messageChannel == 0) {
+        // This is going to be used for control, heartbeat, setting the real time clock, ...
+        // Do nothing for now...
+      }
+      else if(messageChannel < 5) {
+        // This is data from the CPU that we need to route to the right controller
+        // (AMU, Beam, Dose, Vac, and End Station in the future)
+        // Unfortunately the channel doesn't necessarily correspond to Arduino's channels
+        // so I need some routing.
+        // Dose - channel 1 - is sent to Serial3
+        // Vac  - channel 2 - is sent to Serial2
+        // ES   - channel 3 - Not currently hooked up
+        // AMU  - channel 4 - is sent to Serial4
+        // Beam - channel 5 - is sent to Serial1
+        if(messageChannel == 1) {
+          Serial3.write(chanBuffers[channel], msgLength);
+        }
+        else if(messageChannel == 2) {
+          Serial2.write(chanBuffers[channel], msgLength);
+        }
+        else if(messageChannel == 3) {
+          // Not implemented yet.  Leave it hear in case I hook up the ES controller
+        }
+        else if(messageChannel == 4) {
+          Serial4.write(chanBuffers[channel], msgLength);
+        }
+        else if(messageChannel == 5) {
+          Serial1.write(chanBuffers[channel], msgLength);
+        }
+        
+      }
+      
+      // Turn on an LED - I need another LED
+      // digitalWrite(led3PinBeam, HIGH);
+    }
+  }  // End of channel 0 (USB)
+}
+
+void handleSerial1() {
+  
+  if (Serial1.available()) {        // If anything comes in Serial1 - Beam from implanter
+    
+    char in_char = Serial1.read();
+    int channel = 1;
+
+    // Add the character to the buffer and see if the buffer is complete
+    int msgLength = addCharToMessage(in_char, channel);
+    if(msgLength > 0) {
+      // The message is complete
+      // Write all of the data to the SD card
+      writeToSD(buildChannelSDoutput(channel, chanBuffers[channel], msgLength));
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
@@ -421,14 +475,14 @@ void handleSerial2() {
   if (Serial2.available()) {        // If anything comes in Serial2 - Vac from implanter
     
     char in_char = Serial2.read();
-    int channel = 1;
+    int channel = 2;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
     if(msgLength > 0) {
       // The message is complete
       // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      writeToSD(buildChannelSDoutput(channel, chanBuffers[channel], msgLength));
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
@@ -449,14 +503,14 @@ void handleSerial3() {
   if (Serial3.available()) {        // If anything comes in Serial3 - Dose from Implanter
     
     char in_char = Serial3.read();
-    int channel = 2;
+    int channel = 3;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
     if(msgLength > 0) {
       // The message is complete
       // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      writeToSD(buildChannelSDoutput(channel, chanBuffers[channel], msgLength));
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
@@ -477,14 +531,14 @@ void handleSerial4() {
   if (Serial4.available()) {        // If anything comes in Serial4 - AMU from Implanter
     
     char in_char = Serial4.read();
-    int channel = 3;
+    int channel = 4;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
     if(msgLength > 0) {
       // The message is complete
       // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      writeToSD(buildChannelSDoutput(channel, chanBuffers[channel], msgLength));
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
@@ -505,14 +559,14 @@ void handleSerial5() {
   if (Serial5.available()) {        // If anything comes in Serial5 - Beam from DataFlow
     
     char in_char = Serial5.read();
-    int channel = 4;
+    int channel = 5;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
     if(msgLength > 0) {
       // The message is complete
       // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      writeToSD(buildChannelSDoutput(channel, chanBuffers[channel], msgLength));
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
@@ -530,14 +584,14 @@ void handleSerial6() {
   if (Serial6.available()) {        // If anything comes in Serial6 - Vac from DataFlow
     
     char in_char = Serial6.read();
-    int channel = 5;
+    int channel = 6;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
     if(msgLength > 0) {
       // The message is complete
       // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      writeToSD(buildChannelSDoutput(channel, chanBuffers[channel], msgLength));
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
@@ -555,14 +609,14 @@ void handleSerial7() {
   if (Serial7.available()) {        // If anything comes in Serial7 - Dose from DataFlow
     
     char in_char = Serial7.read();
-    int channel = 6;
+    int channel = 7;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
     if(msgLength > 0) {
       // The message is complete
       // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      writeToSD(buildChannelSDoutput(channel, chanBuffers[channel], msgLength));
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
@@ -580,14 +634,14 @@ void handleSerial8() {
   if (Serial8.available()) {        // If anything comes in Serial8 - AMU from DataFlow
     
     char in_char = Serial8.read();
-    int channel = 7;
+    int channel = 8;
 
     // Add the character to the buffer and see if the buffer is complete
     int msgLength = addCharToMessage(in_char, channel);
     if(msgLength > 0) {
       // The message is complete
       // Write all of the data to the SD card
-      writeToSD(buildChannelSDoutput(channel + 1, chanBuffers[channel], msgLength));
+      writeToSD(buildChannelSDoutput(channel, chanBuffers[channel], msgLength));
       // Send only the long messages to the python code
       if(msgLength > 8) {
         writeToSerial(channel, chanBuffers[channel], msgLength);
@@ -717,44 +771,13 @@ void setup() {
 
 
 void loop() {
-  /* All this code does is wait for look for input from the serial ports.
-   */
-
-
-unsigned long currentMillis = millis();
+  // All this code does is wait for look for input from the serial ports.
+  
+unsigned long currentMillis;
 const long interval = 1000;
 
-
-  // If anything comes in on the USB serial port, this is me typing a diagnostics message.
-  // When we get to the return, build a string and spit it out.
-   if(Serial.available()) {
-      in_char = Serial.read();
-      if(in_char == 10) {
-        // We have received the end of the message.  
-        // Do something with it.
-        serialBuffer[serialBufferIndex++] = in_char;
-        
-        // Look at the first character to see what to do with it
-        // if(serialBuffer[0] == "T") {
-          // We are setting the real time clock (RTC)
-          
-        }
-        // else if(serialBuffer[0] == "F") {
-          // We are fetching the current real time clock setting
-        //  DateTime now = RTC.now();
-          
-        // }
-        else {
-          // Error condition?
-        }
-        serialBufferIndex = 0;
-        // writeToSD(dataString);
-      // }
-      // else {
-        // serialBuffer[serialBufferIndex++] = in_char;
-      // }
-   }
-
+   // Handle each of the serial ports
+   handleSerial();
    handleSerial1();
    handleSerial2();
    handleSerial3();
@@ -777,39 +800,31 @@ const long interval = 1000;
       writeToSD_delayed();
    }
     
-
    // Hearbeat - just so I know the code is running
    currentMillis = millis();
    if ((currentMillis - previousMillis) > interval) {
-    // I had an issue this week when the computer and python script couldn't
-    // connect to the arduino (no valid com port).  I had to boot the arduino 
-    // to get it to come back.  This would suck if this happened occassionally 
-    // when monitoring implants.  Check to see if the serial port is not available,
-    // and then reset it.
-    if(!Serial) {
-      Serial.end();
-      Serial.begin(9600);
-    }
+      // I had an issue this week when the computer and python script couldn't
+      // connect to the arduino (no valid com port).  I had to boot the arduino 
+      // to get it to come back.  This would suck if this happened occassionally 
+      // when monitoring implants.  Check to see if the serial port is not available,
+      // and then reset it.
+      if(!Serial) {
+        Serial.end();
+        Serial.begin(9600);
+      }
     
     // save the last time you blinked the LED
     // Serial.println("Heartbeat");
     previousMillis = currentMillis;
 
     // if the LED is off turn it on and vice-versa:
-    if (ledState == LOW) {
-      ledState = HIGH;
-    } else {
-      ledState = LOW;
-    }
-
-    // set the LED with the ledState of the variable:
+    ledState =! ledState;
     digitalWrite(13, ledState);
 
-    // Turn off the status LEDsdigitalWrite(led1PinDose, LOW);
+    // Turn off the status LEDs
     digitalWrite(led1PinDose, LOW);
     digitalWrite(led2PinAMU, LOW);
     digitalWrite(led3PinBeam, LOW);
     digitalWrite(led4PinVac, LOW);
   }
-
 }

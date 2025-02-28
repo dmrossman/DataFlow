@@ -25,8 +25,8 @@ if __name__ == '__main__':
             # bytes_ = b'hello'
             bytes_ = [b'\x00', b'\x1F', b'\x9F', b'\xAF', b'\xFF']
             # str_ = 'hello'
-            str_ = str(bytes_)
-            str_size = link.tx_obj(str_, send_size) - send_size
+            # str_ = str(bytes_)
+            str_size = link.tx_obj(bytes_, send_size) - send_size
             send_size += str_size
             
             ###################################################################
@@ -67,10 +67,11 @@ if __name__ == '__main__':
             ###################################################################
             # Parse response string
             ###################################################################
-            rec_str_   = link.rx_obj(obj_type=type(str_))
+            # rec_str_   = link.rx_obj(obj_type=type(str_))
             #                         obj_byte_size=str_size)
             #                         start_pos=0)
             
+            rec_bytes_ = link.rx_obj()
             ###################################################################
             # Parse response float
             ###################################################################
@@ -83,8 +84,8 @@ if __name__ == '__main__':
             ###################################################################
             # print('SENT: {} {} {}'.format(list_, str_, float_))
             # print('RCVD: {} {} {}'.format(rec_list_, rec_str_, rec_float_))
-            print('SENT: {}'.format(str_))
-            print('RCVD: {}'.format(rec_str_))
+            print('SENT: {}'.format(bytes_))
+            print('RCVD: {}'.format(rec_bytes_))
             print(' ')
             
     except KeyboardInterrupt:
