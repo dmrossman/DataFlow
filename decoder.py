@@ -265,7 +265,7 @@ fd = fileDecoder()
 # fileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry2d.txt'
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 # outputFileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry-outputd.txt'
-fileName = 'E:/dataFlowLog4-Sunday.txt'
+fileName = 'E:/dataFlowLog4.txt'
 
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 outputFileName = 'E:/output.txt'
@@ -286,7 +286,7 @@ while(line):
 
     line = f.readline()
     lineData = line.split()
-    print(lineData[:10])
+    # print(lineData[:10])
     if(len(lineData) > 0):
         # Skip messages with length = 8
         #if(lineData[3] != '8'):

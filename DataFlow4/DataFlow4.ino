@@ -22,6 +22,7 @@
 // Feb 19, 2025 - Trying to fix empty space in my files by resetting the time delay after writing to the SD card
 // Feb 25, 2025 - Fixing some minor typos and adding code to check for a dropped serial port
 // Feb 27, 2025 - Moving the serial ports around, adding in Serial (USB) and giving up on SerialTransfer code
+// Note: Still getting blank lines in the SD Card output file... Normal end of line is just a line feed, but the blank lines are CRLFs?
 
 // constants won't change. Used here to set a pin number:
 const int ledPin = LED_BUILTIN;       // the number of the builtin LED pin (13)
