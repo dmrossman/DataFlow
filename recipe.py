@@ -5,8 +5,8 @@ Spyder Editor
 This is a temporary script file.
 """
 
-import json
 import datetime as datetime
+import os
 
 class Parameter:
     # Used in the recipe
@@ -23,8 +23,8 @@ class Recipe:
         self.Name_of_Engineer = ''
         self.Implanter_ID = ''
         self.Species = ''
-        self.Date_Created = datetime.now().strftime('%m-%d-%Y %H:%M:%S') 
-        self.Date_Last_Modified = datetime.now().strftime('%m-%d-%Y %H:%M:%S') 
+        self.Date_Created = datetime.now().strftime('%m-%d-%Y  %H:%M:%S') 
+        self.Date_Last_Modified = datetime.now().strftime('%m-%d-%Y  %H:%M:%S') 
         
         # Let's try a dictionary of parameters.  The values of the parameter
         # can be looked up by the parameter's name.
@@ -188,6 +188,10 @@ class Recipe:
 
     def __init__(self, fileName):
         # This is the typical way to create the reipe class, from an existing file
+        self.readRecipe(fileName)
+    
+    def readRecipe(self, fileName):
+        # This is the typical way to create the reipe class, from an existing file
         try:
             self.Parameters = {}
             
@@ -221,9 +225,9 @@ class Recipe:
                     
                 # Let's just assume the date time format stays in two fields
                 line = lines[3].split()
-                self.Date_Created = line[1] + ' ' + line[2]
+                self.Date_Created = line[1] + '  ' + line[2]
                 line = lines[4].split()
-                self.Date_Last_Modified = line[1] + ' ' + line[2]
+                self.Date_Last_Modified = line[1] + '  ' + line[2]
                 
                 # The rest of the lines have parameters
                 for line in lines[5:]:
@@ -234,24 +238,63 @@ class Recipe:
         except Exception as e:
             print(f'An error occurred: {e}')
             return
+        
+    def writeRecipe(self, fileName):
+        # This is the typical way to create the reipe class, from an existing file
+        try:
+            
+            with open(fileName, 'w') as file:
+                
+                # Write out the header rows
+                file.write('%-30s %s\n' % ("#Name_of_Engineer", self.Name_of_Engineer))
+                print(self.Name_of_Engineer)
+                file.write('%-30s %s\n' % ("#Implanter_ID", self.Implanter_ID))
+                print(self.Implanter_ID)
+                file.write('%-30s %s\n' % ("#Species", self.Species))
+                print(self.Species)
+                file.write('%-30s %s\n' % ("#Date_Created", self.Date_Created))
+                print(self.Date_Created)
+                file.write('%-30s %s\n' % ("#Date_Last_Modified", self.Date_Last_Modified))
+                print(self.Date_Last_Modified)
+                
+                # Now write out the parameter data
+                parameterNames = self.Parameters.keys()
+                for parameter in parameterNames:
+                    file.write('%-25s %15s %15s %5s %5s \n' % (parameter, self.Parameters[parameter].LowerLimit, 
+                                                                 self.Parameters[parameter].UpperLimit, 
+                                                                 self.Parameters[parameter].Warning, 
+                                                                 self.Parameters[parameter].Interlock))
+                    print(parameter)
+                
+        except Exception as e:
+            print(f'An error occurred: {e}')
+            return
     
     def __repr__(self):
         # return f"Person(name={self.name}, age={self.age}, email={self.email})"
         pass
 
-
-# Example usage
 if __name__ == "__main__":
     
     # Hmm, just found out that Python doesn't support to methods with different arguments, 
     # so you can't have two __inits__, the second one overwrites the first.
     # recipe0 = Recipe()
     
-    path = r'C:\Users\dmros\Downloads\AOC-1E15-70-H2'
-    recipe = Recipe(path)
+    inputPath = 'C:/Users/dmros/OneDrive/Documents/GitHub/DataFlow/Recipes/'
+    outputPath = 'C:/Users/dmros/OneDrive/Documents/GitHub/DataFlow/Recipes2/'
+    # path = r'C:\Users\dmros\Downloads\AOC-1E15-70-H2'
+    # fileName = 'ADV-4-B-1E15-50K'
     
-    print(recipe.Date_Created)
-    parameterNames = recipe.Parameters.keys()
-    for parameter in parameterNames:
-        tmpStr = parameter + ': LowerLimit = ' + str(recipe.Parameters[parameter].LowerLimit)
-        print(tmpStr)
+    for fileName in os.scandir(inputPath):
+        
+        tmpRecipe = Recipe(fileName)
+        tmpRecipe.writeRecipe(outputPath + fileName.name)
+        
+    # recipe = Recipe(inputPath + fileName)
+    # recipe.writeRecipe(outputPath + fileName)
+    
+    # print(recipe.Date_Created)
+    # parameterNames = recipe.Parameters.keys()
+    # for parameter in parameterNames:
+    #     tmpStr = parameter + ': LowerLimit = ' + str(recipe.Parameters[parameter].LowerLimit)
+    #     print(tmpStr)

@@ -1,9 +1,0 @@
-Manufacturer=Mill-Max
-PartNumber=110-43-648-41-001000
-PartCategory=Connector
-PackageCategory=Dual-In-Line Sockets
-PinCount=48
-Version=1.1
-Released=2020-02-21 15:18:57
-Downloaded=2022-12-23 02:35:30
-3D=N
