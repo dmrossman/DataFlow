@@ -265,10 +265,12 @@ fd = fileDecoder()
 # fileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry2d.txt'
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 # outputFileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry-outputd.txt'
-fileName = 'E:/dataFlowLog4.txt'
+# fileName = 'E:/dataFlowLog4.txt'
+fileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/dataFlowLog4=Mar5-2025.txt'
 
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
-outputFileName = 'E:/output.txt'
+# outputFileName = 'E:/output.txt'
+outputFileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/output.txt'
 
 f = open(fileName)
 fo = open(outputFileName, "w")
