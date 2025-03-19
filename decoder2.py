@@ -14,14 +14,7 @@ class fileDecoder():
                      'Source Fil I', 'Source Fil V', 'Source Mag I', 'Vaporizer', 'Vaporizer Oven', 'Vaporizer Heater', 'Extraction I', 'Extraction V',
                      'E.S. Aperture V', 'Extraction Axis 1', 'Extraction Axis 2', 'Extraction Axis 3', 'Ext Suppress I', 'Ext Suppress V', 'Acceleration I',
                      'Accel Axis 3', 'Accel Supp I', 'Accel Supp V', 'E.S. Primary I', 'E.S. Secondary I', 'Gas Leak Vlv 1', 'Gas Leak Vlv 2', 'Gas Leak Vlv 3', 
-                     'Gas Leak Vlv 4', 'Plus Ten 1', 'Plus Ten 2', 'Plus Ten 3', 'Ground']
-        
-        var_data = ['1.0e14', '1.23', '6', '25', '5.23', '2:12', '0', '1.0', '60.0', '49.0',
-                     '123.0', '1.0e-5', '1.0e-6', '1.0e-7', '1.0e-5', '1.0e-4', '0.8', '60.1', 
-                     '127.5', '5.24', '8.1', 'OFF', '23.1', '25.2', '1.27', '50.1',
-                     '1.27', '500', '450', '350', '0.12', '1.2', '0.1',
-                     '850', '0.12', '1.2', '10.0', '0.1', '100', '200', '300', 
-                     '400', '991', '992', '993', '994']
+                     'Gas Leak Vlv 4', 'Plus Ten 1', 'Plus Ten 2', 'Plus Ten 3', 'Ground', 'DoseX', 'DoseY']
         
         # Format is 'Value Name' : [sheet number, row, column, first byte in message, last byte in message, K1, K2], ... 
         self.lookup = {'Dose'              : [1, 0, 1, 6, 9, 2, 64, 'E'], 
@@ -219,6 +212,10 @@ class fileDecoder():
             return(True)
         return(False)
     
+    def requestMessage(self, msg):
+        # A request for data message has a length of .... and two bytes with 20, 23
+        pass
+    
     def decodeValue(self, msgBytes, K1, K2, fmt):
         # decodeValue expects three bytes from one of the messages
         # If the first byte is zero, just return zero
@@ -282,12 +279,17 @@ line = f.readline()
 line = f.readline()
 line = f.readline()
 
+millis = 0
 
 # Loop through the first couple of lines and try and decode them...
 while(line):
 
     line = f.readline()
     lineData = line.split()
+    
+    # Is this a request for data message?
+    
+    
     # print(lineData[:10])
     if(len(lineData) > 0):
         # Skip messages with length = 8
