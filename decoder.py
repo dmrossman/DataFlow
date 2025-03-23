@@ -5,8 +5,6 @@ Created on Sat Sep 14 08:54:22 2024
 @author: dmros
 """
 
-# This code requires tksheet which is not a builtin library.  Use pip install tksheet to install
-
 class fileDecoder():
     def __init__(self):
         var_names = ['Dose', 'Beam Current', 'Wafer Size', 'Preset Scans', 'Estimated Time', 'Actual Time', 'Press Comp', 'Trim', 'Beam Energy', 'A.M.U.',
