@@ -5,8 +5,6 @@ Created on Sat Sep 14 08:54:22 2024
 @author: dmros
 """
 
-# This code requires tksheet which is not a builtin library.  Use pip install tksheet to install
-
 class fileDecoder():
     def __init__(self):
         var_names = ['Dose', 'Beam Current', 'Wafer Size', 'Preset Scans', 'Estimated Time', 'Actual Time', 'Press Comp', 'Trim', 'Beam Energy', 'A.M.U.',
@@ -16,12 +14,6 @@ class fileDecoder():
                      'Accel Axis 3', 'Accel Supp I', 'Accel Supp V', 'E.S. Primary I', 'E.S. Secondary I', 'Gas Leak Vlv 1', 'Gas Leak Vlv 2', 'Gas Leak Vlv 3', 
                      'Gas Leak Vlv 4', 'Plus Ten 1', 'Plus Ten 2', 'Plus Ten 3', 'Ground']
         
-        var_data = ['1.0e14', '1.23', '6', '25', '5.23', '2:12', '0', '1.0', '60.0', '49.0',
-                     '123.0', '1.0e-5', '1.0e-6', '1.0e-7', '1.0e-5', '1.0e-4', '0.8', '60.1', 
-                     '127.5', '5.24', '8.1', 'OFF', '23.1', '25.2', '1.27', '50.1',
-                     '1.27', '500', '450', '350', '0.12', '1.2', '0.1',
-                     '850', '0.12', '1.2', '10.0', '0.1', '100', '200', '300', 
-                     '400', '991', '992', '993', '994']
         
         # Format is 'Value Name' : [sheet number, row, column, first byte in message, last byte in message, K1, K2], ... 
         self.lookup = {'Dose'              : [1, 0, 1, 6, 9, 2, 64, 'E'], 
@@ -266,11 +258,13 @@ fd = fileDecoder()
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 # outputFileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry-outputd.txt'
 # fileName = 'E:/dataFlowLog4.txt'
-fileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/dataFlowLog4=Mar5-2025.txt'
+# fileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/dataFlowLog4=Mar5-2025.txt'
+fileName = 'C:/Users/dmros/Documents/Temp/dataFlowLog4-Mar12-2025A.txt'
 
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 # outputFileName = 'E:/output.txt'
-outputFileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/output.txt'
+# outputFileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/output.txt'
+outputFileName = 'C:/Users/dmros/Documents/Temp/output.txt'
 
 f = open(fileName)
 fo = open(outputFileName, "w")
