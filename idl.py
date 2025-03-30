@@ -146,7 +146,7 @@ class IDL:
                     self.Implant_Time = ''
                 
                 # For the remaining lines, put the data into the Parameters
-                for i in range(10, 58):
+                for i in range(11, 59):
                     line = lines[i].strip()
                     parts = re.split(r'\s{2,}', line)
                     key = parts[0]
@@ -199,7 +199,29 @@ if __name__ == "__main__":
     
     inputPath = 'C:/Users/DRossman/Downloads/DF/'
     outputPath = 'C:/Users/DRossman/Downloads/DF2/'
+    
+    summary = []
+    # row = ['Date Created', 'Lot ID', 'Batch ID', 'Device ID', 'Wafer Count', 'Operator', ' Disk ID', 'Recipe', 'Implant time', 'row']
+    
     for fileName in os.scandir(inputPath):
         myIDL = IDL()
         myIDL.readIDL(inputPath + fileName.name)
-        myIDL.writeIDL(outputPath + fileName.name)
+        
+        for i in range(3):
+            row = [myIDL.Date_Created, myIDL.Lot_ID, myIDL.Batch_ID, myIDL.Device_ID, myIDL.Wafer_Count, myIDL.Operator_ID, myIDL.Disk_ID, myIDL.Recipe, myIDL.Implant_Time, i]
+            for key in myIDL.Parameters.keys():
+                if (key == 'Pump Down Time,sec') and (i > 0):
+                    row.append(myIDL.Parameters[key][0])             # Pump Down Time is an odd ball and only has one entry.  The rest have three
+                else:
+                    row.append(myIDL.Parameters[key][i])
+                
+            summary.append(row)
+        
+        # myIDL.writeIDL(outputPath + fileName.name)
+        fo = open(inputPath + 'summary.txt', 'w')
+        for i in range(len(summary)):
+            for j in range(len(summary[i])):
+                fo.write(f'{summary[i][j]}\t')
+            fo.write('\n')
+            
+        fo.close()
