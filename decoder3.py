@@ -5,7 +5,9 @@ Created on Sat Sep 14 08:54:22 2024
 @author: dmros
 """
 
-# This version of decode takes the raw dataflow data and puts the data into a single row as if 
+# This version of decode extends the last version by only writing out the data for sections of data
+# where an implant occurred.  For the purpose of this code, an implant starts when the dose state
+# goes to 11 (hah, takes the raw dataflow data and puts the data into a single row as if 
 # dataflow made a request for data and the data frmo dose, amu, beam, vac, were put into one line
 # and then saved.  For now if there is missing data (i.e. Vac controller doesn't respond) it will 
 # leave the previous data in the buffer.
@@ -289,7 +291,7 @@ fileName = 'C:/Users/DRossman/dataFlowLog4-Mar12-2025A.txt'
 
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 # outputFileName = 'E:/output.txt'
-outputFileName = 'C:/Users/DRossman/output.txt'
+outputFileName = 'C:/Users/DRossman/output-impOnly.txt'
 
 f = open(fileName)
 fo = open(outputFileName, "w")
@@ -303,6 +305,8 @@ line = f.readline()
 
 lastMillis = 0
 
+state = 'waiting'
+
 # Loop through the first couple of lines and try and decode them...
 while(line):
 
@@ -314,22 +318,37 @@ while(line):
 
     # Is this a request for data message?
     if(len(lineData) > 0):
-        print(len(lineData))
+        # print(len(lineData))
         if(fd.requestMessage(lineData[4:])):
             # Get the time (millis)
             currentMillis = int(lineData[0])
-            print(currentMillis)
+            # print(currentMillis)
             
             # If enough tiem has passed, then this is a new request
             if((currentMillis - lastMillis) > 750):
                 lastMillis = currentMillis
                 
-                # Then it is time to write out the current data and clear the buffer
-                fo.write(f"{currentMillis}\t")
-                for i in range(50):
-                    fo.write(f"{fd.buffer[i]}\t")
-                fo.write("\n")
-    
+                # We have a new line, should we write it out?
+                if((state == 'waiting') and (int(fd.buffer[49]) == 11)):   # Pumpdown has started
+                    state = 'pumping'
+                    pumpStartTime = currentMillis
+                    # Don't write anything out yet
+                elif((state == 'pumping') and (int(fd.buffer[49]) != 11)):   # Pumpdown has ended
+                    state = 'implanting'
+                    pumpDownTime = (currentMillis - pumpStartTime) / 1000   # Convert it from milliseconds to seconds
+                    fo.write(f"Pump down time = {pumpDownTime}\n")
+                elif((state == 'implanting') and (int(fd.buffer[49]) != 5)):
+                    # Write out the data
+                    # Then it is time to write out the current data and clear the buffer
+                    fo.write(f"{currentMillis}\t")
+                    for i in range(50):
+                        fo.write(f"{fd.buffer[i]}\t")
+                    fo.write("\n")
+                elif((state == 'implanting') and (int(fd.buffer[49]) == 5)):
+                    # We are finished with this batch
+                    fo.write("\n")
+                    state = 'waiting'
+        
     
     # print(lineData[:10])
     if(len(lineData) > 0):
