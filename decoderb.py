@@ -117,7 +117,8 @@ class fileDecoder():
             # Last byte in message is 255, so decrement by one
             if(last_byte < (len(message) - 1)):
                 # val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-                val = self.makeFloat(message[first_byte: last_byte])
+                # val = self.makeFloat(message[first_byte: last_byte])
+                val = self.decodeValue2(message[first_byte: last_byte], fmt)
                 fo.write(f"{val}\t")
         fo.write('\n')
         
@@ -135,7 +136,8 @@ class fileDecoder():
             # Last byte in message is 255, so decrement by one
             if(last_byte < (len(message) - 1)):
                 # val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-                val = self.makeFloat(message[first_byte: last_byte])
+                # val = self.makeFloat(message[first_byte: last_byte])
+                val = self.decodeValue2(message[first_byte: last_byte], fmt)
                 fo.write(f"{val}\t")
         fo.write('\n')
         
@@ -152,7 +154,8 @@ class fileDecoder():
             # Last byte in message is 255, so decrement by one
             if(last_byte < (len(message) - 1)):
                 # val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-                val = self.makeFloat(message[first_byte: last_byte])
+                # val = self.makeFloat(message[first_byte: last_byte])
+                val = self.decodeValue2(message[first_byte: last_byte], fmt)
                 fo.write(f"{val}\t")
         fo.write('\n')
         
@@ -169,7 +172,8 @@ class fileDecoder():
             # Last byte in message is 255, so decrement by one
             if(last_byte < (len(message) - 1)):
                 # val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
-                val = self.makeFloat(message[first_byte: last_byte])
+                # val = self.makeFloat(message[first_byte: last_byte])
+                val = self.decodeValue2(message[first_byte: last_byte], fmt)
                 fo.write(f"{val}\t")
         fo.write('\n')
 
@@ -188,7 +192,9 @@ class fileDecoder():
             sheet, row, col, first_byte, last_byte, K1, K2, fmt = self.lookup[field]
             # Make sure the bytes to decode are in the message
             if(last_byte < len(message)):
-                val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                # val = self.decodeValue(message[first_byte: last_byte], K1, K2, fmt)
+                # val = self.makeFloat(message[first_byte: last_byte])
+                val = self.decodeValue2(message[first_byte: last_byte], fmt)
                 fo.write(f"{val}\t")
         fo.write('\n')
         
@@ -259,17 +265,37 @@ class fileDecoder():
                 return('Cool')
         else:
             print('Error: Invalid number format')
+
+    def decodeValue2(self, msgBytes, fmt):
+        # Take care of the special case of the vaporizer
+        if(fmt == 'V'):   # Vaporizer - this is special
+            if((msgBytes[0] > 63) and (msgBytes[0] < 80)):
+                return('Off')
+            elif((msgBytes[0] > 79) and (msgBytes[0] < 96)):
+                return('On')
+            elif((msgBytes[0] > 95) and (msgBytes[0] < 112)):
+                return('Cool')
+
+        if(len(msgBytes) == 0):
+            result = 0
+        else:
+            result = self.makeFloat(bytes(msgBytes))
+        
+        # Now that we have the value, let's return a string with the correct format
+        if(fmt == 'D'):     # Deccimal
+            return('{:.0f}'.format(result))
+        elif(fmt == 'F'):   # Floating point
+            return('{:.3f}'.format(result))
+        elif(fmt == 'E'):   # Scientific notation, exponent
+            return('{:.3e}'.format(result))
+        else:
+            print('Error: Invalid number format')
             
     def makeFloat(self, msgBytes):
         # This will convert four bytes to IEEE float
-        # if len(bytes) != 4:
-        #    raise ValueError("Input must be four bytes long.")
-        if(len(msgBytes) == 0):
-            result = 0
-        elif(msgBytes[0] == 0):
-            result = 0
-        else:
-            return(struct.unpack('>f', bytes(msgBytes))[0])
+        if len(msgBytes) != 4:
+           raise ValueError("Input must be four bytes long.")
+        return(struct.unpack('>f', bytes(msgBytes))[0])
         
     
 fd = fileDecoder()
@@ -286,7 +312,7 @@ fileName = 'C:/Users/dmros/Documents/Temp/dataFlowLog4-Mar12-2025A.txt'
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 # outputFileName = 'E:/output.txt'
 # outputFileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/output.txt'
-outputFileName = 'C:/Users/dmros/Documents/Temp/output.txt'
+outputFileName = 'C:/Users/dmros/Documents/Temp/output-b.txt'
 
 f = open(fileName)
 fo = open(outputFileName, "w")
