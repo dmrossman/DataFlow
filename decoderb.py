@@ -288,6 +288,8 @@ class fileDecoder():
             return('{:.3f}'.format(result))
         elif(fmt == 'E'):   # Scientific notation, exponent
             return('{:.3e}'.format(result))
+        elif(fmt == 'V'):   # Vaporizer - need to fix this
+            pass
         else:
             print('Error: Invalid number format')
             
@@ -307,12 +309,14 @@ fd = fileDecoder()
 # outputFileName = 'C:/Users/DRossman/Documents/Temp/DataFlow/dataFlowLog4-secondTry-outputd.txt'
 # fileName = 'E:/dataFlowLog4.txt'
 # fileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/dataFlowLog4=Mar5-2025.txt'
-fileName = 'C:/Users/dmros/Documents/Temp/dataFlowLog4-Mar12-2025A.txt'
+# fileName = 'C:/Users/dmros/Documents/Temp/dataFlowLog4-Mar12-2025A.txt'
+fileName = 'L:/NV10 Lightpipes/DataFlow1/Apr-13-2025/dataFlowLog4-Startup-Shutdown1-contl-off.txt'
 
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 # outputFileName = 'E:/output.txt'
 # outputFileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/output.txt'
-outputFileName = 'C:/Users/dmros/Documents/Temp/output-b.txt'
+# outputFileName = 'C:/Users/dmros/Documents/Temp/output-b.txt'
+outputFileName = 'L:/NV10 Lightpipes/DataFlow1/Apr-13-2025/dataFlowLog4-Startup-Shutdown1-contl-off-output.txt'
 
 f = open(fileName)
 fo = open(outputFileName, "w")
