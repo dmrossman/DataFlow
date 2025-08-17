@@ -57,7 +57,7 @@ class IDL:
             tmpList = []
             # Get the number of times the value is to be repeated in the list
             # This is almost always 3 times, except for Pump Down Time... why can't
-            # The all be the same?!
+            # They all be the same?!
             for i in range(self.setupParameters[key][1]):
                 tmpList.append(self.setupParameters[key][0])
                 
