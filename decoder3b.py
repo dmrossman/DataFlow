@@ -300,12 +300,15 @@ fd = fileDecoder()
 # fileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-5-2025/dataFlowLog4=Mar5-2025.txt'
 # fileName = 'F:/NV10 Lightpipes/DataFlow1/Mar-12-2025/dataFlowLog4=Mar12-2025A.txt'
 # fileName = 'C:/Users/DRossman/dataFlowLog4-Mar12-2025A.txt'
-fileName = 'F:/NV10 Lightpipes/DataFlow1/Apr-13-2025/dataFlowLog4-Apr13-2025.txt'
+# fileName = 'F:/NV10 Lightpipes/DataFlow1/Apr-13-2025/dataFlowLog4-Apr13-2025.txt'
+# fileName = 'C:/Users/DRossman/Documents/Temp/180B/MachineData/dataFlowLog4-Aug17-2025.txt'
+fileName = 'C:/Users/DRossman/Documents/Temp/180B/MachineData/dataFlowLog4-May18-2025.txt'
 
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 # outputFileName = 'E:/output.txt'
 # outputFileName = 'C:/Users/DRossman/output-impOnly.txt'
-outputFileName = 'F:/NV10 Lightpipes/DataFlow1/Apr-13-2025/dataFlowLog4-Apr13-2025-out.txt'
+# outputFileName = 'F:/NV10 Lightpipes/DataFlow1/Apr-13-2025/dataFlowLog4-Apr13-2025-out.txt'
+outputFileName = 'C:/Users/DRossman/Documents/Temp/180B/MachineData/dataFlowLog4-May18-2025-out.txt'
 
 f = open(fileName)
 fo = open(outputFileName, "w")

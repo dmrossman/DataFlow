@@ -197,7 +197,7 @@ if __name__ == "__main__":
     # inputPath = 'C:/Users/DRossman/OneDrive - Coherent Corporation/Documents/GitHub/DataFlow/IDLs/565442_202411121320.1'
     # outputPath = 'C:/Users/DRossman/OneDrive - Coherent Corporation/Documents/GitHub/DataFlow/IDLs/565442_202411121320.1.output'
     
-    inputPath = 'C:/Users/DRossman/Downloads/DF/'
+    inputPath = 'C:/Users/DRossman/Documents/Temp/180B/'
     outputPath = 'C:/Users/DRossman/Downloads/DF2/'
     
     summary = []
@@ -207,6 +207,8 @@ if __name__ == "__main__":
         myIDL = IDL()
         myIDL.readIDL(inputPath + fileName.name)
         
+        # ToDo: This script does not properly handle IDLs that were aborts.  The gas fields only have data for the part of the implant 
+        #       before the abort.  For now, I am dropping the files that are causing the script to die.
         for i in range(3):
             row = [myIDL.Date_Created, myIDL.Lot_ID, myIDL.Batch_ID, myIDL.Device_ID, myIDL.Wafer_Count, myIDL.Operator_ID, myIDL.Disk_ID, myIDL.Recipe, myIDL.Implant_Time, i]
             for key in myIDL.Parameters.keys():
