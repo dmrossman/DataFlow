@@ -196,13 +196,14 @@ if __name__ == "__main__":
     
     # inputPath = 'C:/Users/DRossman/OneDrive - Coherent Corporation/Documents/GitHub/DataFlow/IDLs/565442_202411121320.1'
     # outputPath = 'C:/Users/DRossman/OneDrive - Coherent Corporation/Documents/GitHub/DataFlow/IDLs/565442_202411121320.1.output'
-    
-    inputPath = 'C:/Users/DRossman/Documents/Temp/180B/'
-    outputPath = 'C:/Users/DRossman/Downloads/DF2/'
+    # inputPath = 'C:/Users/DRossman/Documents/Temp/180B/'
+    # outputPath = 'C:/Users/DRossman/Downloads/DF2/'
+    inputPath  = 'C:/Users/dmros/OneDrive/Documents/Temp/IDLs/'
+    outputPath = 'C:/Users/dmros/OneDrive/Documents/Temp/'
     
     summary = []
     # row = ['Date Created', 'Lot ID', 'Batch ID', 'Device ID', 'Wafer Count', 'Operator', ' Disk ID', 'Recipe', 'Implant time', 'row']
-    
+
     for fileName in os.scandir(inputPath):
         myIDL = IDL()
         myIDL.readIDL(inputPath + fileName.name)
@@ -227,3 +228,5 @@ if __name__ == "__main__":
             fo.write('\n')
             
         fo.close()
+        
+    
