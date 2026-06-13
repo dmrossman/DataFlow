@@ -198,8 +198,10 @@ if __name__ == "__main__":
     # outputPath = 'C:/Users/DRossman/OneDrive - Coherent Corporation/Documents/GitHub/DataFlow/IDLs/565442_202411121320.1.output'
     # inputPath = 'C:/Users/DRossman/Documents/Temp/180B/'
     # outputPath = 'C:/Users/DRossman/Downloads/DF2/'
+    # inputPath  = 'C:/Users/dmros/OneDrive/Documents/Temp/IDLs/'
+    # outputPath = 'C:/Users/dmros/OneDrive/Documents/Temp/'
     inputPath  = 'C:/Users/dmros/OneDrive/Documents/Temp/IDLs/'
-    outputPath = 'C:/Users/dmros/OneDrive/Documents/Temp/'
+    outputPath = 'C:/Users/dmros/OneDrive/Documents/Temp/Full/'
     
     summary = []
     # row = ['Date Created', 'Lot ID', 'Batch ID', 'Device ID', 'Wafer Count', 'Operator', ' Disk ID', 'Recipe', 'Implant time', 'row']
@@ -207,16 +209,23 @@ if __name__ == "__main__":
     for fileName in os.scandir(inputPath):
         myIDL = IDL()
         myIDL.readIDL(inputPath + fileName.name)
+        myIDL.writeIDL(outputPath + fileName.name)
         
         # ToDo: This script does not properly handle IDLs that were aborts.  The gas fields only have data for the part of the implant 
         #       before the abort.  For now, I am dropping the files that are causing the script to die.
         for i in range(3):
-            row = [myIDL.Date_Created, myIDL.Lot_ID, myIDL.Batch_ID, myIDL.Device_ID, myIDL.Wafer_Count, myIDL.Operator_ID, myIDL.Disk_ID, myIDL.Recipe, myIDL.Implant_Time, i]
+            row = [fileName.name, myIDL.Date_Created, myIDL.Lot_ID, myIDL.Batch_ID, myIDL.Device_ID, myIDL.Wafer_Count, myIDL.Operator_ID, myIDL.Disk_ID, myIDL.Recipe, myIDL.Implant_Time, i]
             for key in myIDL.Parameters.keys():
                 if (key == 'Pump Down Time,sec') and (i > 0):
                     row.append(myIDL.Parameters[key][0])             # Pump Down Time is an odd ball and only has one entry.  The rest have three
                 else:
-                    row.append(myIDL.Parameters[key][i])
+                    # In cases of abort, there might be missing gas valve settings.
+                    # In that case, append 14 spaces.
+                    if i < len(myIDL.Parameters[key]):
+                        row.append(myIDL.Parameters[key][i])
+                    else:
+                        # Put in a blank value
+                        row.append('              ')
                 
             summary.append(row)
         
