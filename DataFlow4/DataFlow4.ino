@@ -90,7 +90,7 @@ void writeToSD(String dataString) {
 
 void writeToSD_delayed() {
   // open the file.
-  File dataFile = SD.open("dataFlowLog4.txt", FILE_WRITE);
+  File dataFile = SD.open("dataFlowLog5.txt", FILE_WRITE);
 
   // For some reason I am getting a lot of empty lines (CR/LF).  Only write out data
   // if the data string is not empty.
@@ -104,7 +104,7 @@ void writeToSD_delayed() {
       // Serial.println(dataString);
     } else {
       // if the file isn't open, pop up an error:
-      Serial.println("error opening dataFlowLog4.txt");
+      Serial.println("error opening dataFlowLog5.txt");
     }
   }
 
@@ -286,7 +286,7 @@ void setupSD() {
   Serial.println("card initialized.");
 
   // Greetings Message
-  writeToSD("Program starting - DataFlow 4 - uint8_t data type, longer buffers, delayed SD card, extra line feed, remove extra lines\n");
+  writeToSD("Program starting - DataFlow 5 - uint8_t data type, longer buffers, delayed SD card, extra line feed, remove extra lines\n");
 
   // Write out file header
   // Right now the format will be the time (millis), followed by the channel (1 and 2, 3 and 4, or 5 and 6)

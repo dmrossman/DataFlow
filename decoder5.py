@@ -7,7 +7,7 @@ Created on Sat Sep 14 08:54:22 2024
 
 # This version of decode extends the last version by only writing out the data for sections of data
 # where an implant occurred.  For the purpose of this code, an implant starts when the dose state
-# goes to 11 (hah, takes the raw dataflow data and puts the data into a single row as if 
+# goes from 5 (standby?) to 11 (hah!), takes the raw dataflow data and puts the data into a single row as if 
 # dataflow made a request for data and the data frmo dose, amu, beam, vac, were put into one line
 # and then saved.  For now if there is missing data (i.e. Vac controller doesn't respond) it will 
 # leave the previous data in the buffer.
@@ -46,7 +46,7 @@ class fileDecoder():
         
         # Format is 'Value Name' : [position number, row, column, first byte in message, last byte in message, scaler, format]
         self.lookup = {'Dose'              : [2, 0, 1, 6, 10, 1, 'E'], 
-                       'Beam Current'      : [3, 1, 1, 10, 14, 1, 'F'], 
+                       'Beam Current'      : [3, 1, 1, 10, 14, 1000, 'F'], 
                        'Wafer Size'        : [4, 2, 1, 14, 18, 1, 'D'], 
                        'Preset Scans'      : [5, 3, 1, 18, 22, 1, 'D'], 
                        'Estimated Time'    : [6, 4, 1, 22, 26, 1, 'F'], 
@@ -56,9 +56,9 @@ class fileDecoder():
                        'UnknownDose1'      : [10, 7, 1, 38, 39, 1, 'F'],     # One byte
                        'Imp State'         : [11, 7, 1, 38, 39, 1, 'F'],     # One byte
                        
-                       'Beam Energy'       : [12, 8, 1, 6, 10, 1, 'F'], 
+                       'Beam Energy'       : [12, 8, 1, 6, 10, .001, 'F'], 
                        'A.M.U.'            : [13, 9, 1, 10, 14, 1, 'F'], 
-                       'Magnet Current'    : [14, 10, 1, 14, 18, 1, 'F'], 
+                       'Magnet Current'    : [14, 10, 1, 14, 18, .666667, 'F'], # Divide by 150 to convert to % current?
                        'UnknownAMU1'       : [15, 10, 1, 18, 19, 1, 'F'],    # One byte
                        'UnknownAMU2'       : [16, 10, 1, 19, 21, 1, 'F'],    # Two bytes, Always zero
                        
@@ -88,7 +88,7 @@ class fileDecoder():
                        'Vaporizer Oven'    : [39, 22, 1, 62, 66, 1, 'F'], 
                        'Vaporizer Heater'  : [40, 0, 1, 66, 70, 1, 'F'],
                        'Source Mag I'      : [41, 20, 1, 70, 74 , 1, 'F'], 
-                       'Extraction V'      : [42, 2, 1, 74, 78, 1, 'F'], 
+                       'Extraction V'      : [42, 2, 1, 74, 78, .001, 'F'], 
                        'Extraction Axis 1' : [43, 4, 1, 78, 82, 1, 'D'], 
                        'Extraction Axis 2' : [44, 5, 1, 82, 86, 1, 'D'], 
                        'Extraction Axis 3' : [45, 6, 1, 86, 90, 1, 'D'], 
@@ -98,11 +98,11 @@ class fileDecoder():
                        'UnknownBeam8'      : [49, 18, 1, 102, 106, 1, 'D'], 
                        'UnknownBeam9'      : [50, 18, 1, 106, 110, 1, 'D'], 
                        'UnknownBeam10'     : [51, 18, 1, 110, 114, 1, 'D'], 
-                       'Extraction I'      : [52, 1, 1, 114, 118, 1, 'F'], 
+                       'Extraction I'      : [52, 1, 1, 114, 118, 1000, 'F'], 
                        'Plus Ten 2'        : [53, 20, 1, 118, 122, 1, 'D'], 
                        'UnknownBeam11'     : [54, 18, 1, 122, 126, 1, 'D'], 
-                       'Ext Suppress I'    : [55, 7, 1, 126, 130, 1, 'F'], 
-                       'Ext Suppress V'    : [56, 8, 1, 130, 134, 1, 'F'],
+                       'Ext Suppress I'    : [55, 7, 1, 126, 130, 1000, 'F'], 
+                       'Ext Suppress V'    : [56, 8, 1, 130, 134, .001, 'F'],
                        'UnknownBeam12'     : [57, 18, 1, 134, 138, 1, 'D'], 
                        'E.S. Aperture V'   : [58, 3, 1, 138, 142, 1, 'F'],   # I found it.  Need to verify the values
                        'UnknownBeam13'     : [59, 18, 1, 142, 146, 1, 'D'], 
@@ -113,12 +113,12 @@ class fileDecoder():
                        'UnknownBeam17'     : [64, 18, 1, 162, 166, 1, 'D'], 
                        'E.S. Secondary I'  : [65, 14, 1, 166, 170, 1, 'F'], 
                        'UnknownBeam18'     : [66, 18, 1, 170, 174, 1, 'D'], 
-                       'E.S. Primary I'    : [67, 13, 1, 174, 178, 1, 'F'], 
-                       'Acceleration I'    : [68, 9, 1, 178, 182, 1, 'F'], 
+                       'E.S. Primary I'    : [67, 13, 1, 174, 178, 1000, 'F'], 
+                       'Acceleration I'    : [68, 9, 1, 178, 182, 1000, 'F'], 
                        'Plus Ten 3'        : [69, 21, 1, 182, 186, 1, 'D'], 
                        'UnknownBeam19'     : [70, 18, 1, 186, 190, 1, 'D'],                        
-                       'Accel Supp I'      : [71, 11, 1, 190, 194, 1, 'F'], 
-                       'Accel Supp V'      : [72, 12, 1, 194, 198, 1, 'F'],
+                       'Accel Supp I'      : [71, 11, 1, 190, 194, 1000, 'F'], 
+                       'Accel Supp V'      : [72, 12, 1, 194, 198, .001, 'F'],
                        'Vaporizer'         : [73, 21, 1, 198, 202, 1, 'V']  # This one will need to be fixed
                        }
         
@@ -362,23 +362,31 @@ fd = fileDecoder()
 # fileName = 'F:/NV10 Lightpipes/DataFlow1/Apr-13-2025/dataFlowLog4-Apr13-2025.txt'
 # fileName = 'C:/Users/DRossman/Documents/Temp/180B/MachineData/dataFlowLog4-Aug17-2025.txt'
 # fileName = 'C:/Users/DRossman/Documents/Temp/180B/MachineData/dataFlowLog4-May18-2025.txt'
-fileName = 'C:/Users/dmros/OneDrive/Documents/GitHub/DataFlow/DataDumps/March/dataFlowLog4-Mar12-2025.txt'
+# fileName = 'C:/Users/dmros/OneDrive/Documents/GitHub/DataFlow/DataDumps/March/dataFlowLog4-Mar12-2025.txt'
+fileName = 'C:/Users/DRossman/OneDrive - Coherent Corporation/Documents/Temp/180B/MachineData/dataFlowLog4-May18-2025.txt'
 
 # outputFileName = 'C:/Users/Dmros/Downloads/DataFlow-main//DataFlow-main/output.txt'
 # outputFileName = 'E:/output.txt'
 # outputFileName = 'C:/Users/DRossman/output-impOnly.txt'
 # outputFileName = 'F:/NV10 Lightpipes/DataFlow1/Apr-13-2025/dataFlowLog4-Apr13-2025-out.txt'
 # outputFileName = 'C:/Users/DRossman/Documents/Temp/180B/MachineData/dataFlowLog4-May18-2025-out.txt'
-outputFileName = 'C:/Users/dmros/OneDrive/Documents/GitHub/DataFlow/DataDumps/March/dataFlowLog4-Mar12-2025-out.txt'
+# outputFileName = 'C:/Users/dmros/OneDrive/Documents/GitHub/DataFlow/DataDumps/March/dataFlowLog4-Mar12-2025-out.txt'
+outputFileName = 'C:/Users/DRossman/OneDrive - Coherent Corporation/Documents/Temp/180B/MachineData/dataFlowLog4-May18-2025-out4.txt'
 
 f = open(fileName)
 fo = open(outputFileName, "w")
 
+IDL_Columns = [2, 12, 13, 3, 5, 4, 17, 18, 19, 25, 33, 26, 34, 42, 52, 39, 40, 27, 28, 29, 30, 43, 44, 45, 55, 56, 41, 14, 68, 61, 71, 72, 67, 65, 58, 8, 20, 21, 6, 7, 9, 11]
+
 # Write out the headers
-fo.write("Millis\tOne\tTwo\t")
+# fo.write("Millis\tOne\tTwo\t")
+# key_list = list(fd.lookup.keys())
+# for key in key_list:
+#     fo.write(f"{key}\t")
+fo.write("Millis\t")
 key_list = list(fd.lookup.keys())
-for key in key_list:
-    fo.write(f"{key}\t")
+for col in IDL_Columns:
+    fo.write(f"{key_list[col-2]}\t")
 fo.write("\n")
     
 
@@ -392,9 +400,12 @@ line = f.readline()
 lastMillis = 0
 
 state = 'waiting'
+# How many IDLs do you want to look at?
+IDL_Count = 10
+IDL_Number = 0
 
 # Loop through the first couple of lines and try and decode them...
-while(line):
+while(line and (IDL_Number < IDL_Count)):
 
     line = f.readline()
     lineData = line.split()
@@ -403,6 +414,7 @@ while(line):
     # 14437	Chan5	MsgLg	8	22	22	22	5	3	20	23	255
 
     # Is this a request for data message?
+    batch_count = 1
     if(len(lineData) > 0):
         # print(len(lineData))
         if(fd.requestMessage(lineData[4:])):
@@ -415,37 +427,48 @@ while(line):
                 lastMillis = currentMillis
                 
                 # We have a new line, should we write it out?
-                if((state == 'waiting') and (int(fd.buffer[49]) == 11)):   # Pumpdown has started
-                    # We have a new implant, so start a new IDL
-                    newIDL = IDL()
-                    newIDL.
+                # Position 11 is what I am calling the implant "state".
+                #  State     Description
+                #    5       Standby
+                #   11       Pumping down
+                #   Not 11   Finished pumping down, usually goes to 3 or 4, I don't know the significance of one vs the other
+                #    1       Implant starts
+                if((state == 'waiting') and (int(fd.buffer[11]) == 11)):   # Pumpdown has started
+                    # We are pumping down the chamber
+                    # newIDL = IDL()
+                    # newIDL.Batch_ID = batch_count++
+                    
                     state = 'pumping'
                     pumpStartTime = currentMillis
                     # Don't write anything out yet
-                elif((state == 'pumping') and (int(fd.buffer[49]) != 11)):   # Pumpdown has ended
+                elif((state == 'pumping') and (int(fd.buffer[11]) != 11)):   # Pumpdown has ended
                     state = 'implanting'
                     pumpDownTime = (currentMillis - pumpStartTime) / 1000   # Convert it from milliseconds to seconds
                     fo.write(f"Pump down time = {pumpDownTime}\n")
-                elif((state == 'implanting') and (int(fd.buffer[49]) != 5)):
+                elif((state == 'implanting') and (int(fd.buffer[11]) != 5)):
                     # Write out the data
                     # Then it is time to write out the current data and clear the buffer
                     fo.write(f"{currentMillis}\t")
-                    for i in range(50):
-                        fo.write(f"{fd.buffer[i]}\t")
+                    # Print all columns (including unknowns)
+                    # for i in range(74):
+                    #     fo.write(f"{fd.buffer[i]}\t")
+                    for col in IDL_Columns:
+                        fo.write(f"{fd.buffer[col]}\t")
                     fo.write("\n")
-                elif((state == 'implanting') and (int(fd.buffer[49]) == 5)):
+                elif((state == 'implanting') and (int(fd.buffer[11]) == 5)):
                     # We are finished with this batch
+                    IDL_Number += 1
                     fo.write("\n")
                     state = 'waiting'
                 
                 
                 
                 
-                
-                fo.write(f"{currentMillis}\t")
-                for i in range(74):
-                    fo.write(f"{fd.buffer[i]}\t")
-                fo.write("\n")
+                # Write out all of the data
+                # fo.write(f"{currentMillis}\t")
+                # for i in range(74):
+                #     fo.write(f"{fd.buffer[i]}\t")
+                # fo.write("\n")
                 
     # print(lineData[:10])
     if(len(lineData) > 0):
